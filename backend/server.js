@@ -1,7 +1,12 @@
 const app = require('express').express();
+const session = require('express-session');
+const cors = require('cors');
+const mongoose = require('mongoose');
 
-const PORT = process.env.PORT || 4000;
+// set PORT
+app.set('port', process.env.PORT || 4000);
 app.use(cors());
+app.use(express.json());
 
 app.use((req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -9,7 +14,16 @@ app.use((req, res) => {
     next();
 });
 
-app.use(express.json());
+mongoose.connect(process.env.MONGO_CONNECTION_URL, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+})
+    .then(() => console.log('Mongodb connected successfully'))
+    .catch(err => {
+        console.log(err)
+        console.log('Mongdb connection faild')
+    })
 
 app.use(session({
     secret: 'pass-manager',
@@ -18,6 +32,6 @@ app.use(session({
     cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 } // 1 day
 }));
 
-app.listen(PORT, () => {
-    console.log(`Listening on PORT: ${PORT}`);
+app.listen(app.get('port'), () => {
+    console.log(`Listening on PORT: ${app.get('port')}`);
 })
