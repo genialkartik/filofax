@@ -1,0 +1,83 @@
+.App-header {
+  height: 64px;
+  background: aliceblue;
+}
+.restpage{
+  min-height: calc(100vh - 64px);
+  position: relative;
+}
+.nav-container {
+  display: flex;
+  width: 100%;
+  max-width: 90%;
+  margin: 0 auto;
+  align-items: center;
+  height: 100%;
+}
+.app-brand {
+  font-size: 28px;
+}
+.app-brand-link{
+  color: #111;
+  text-decoration: none;
+}
+.app-links {
+  margin-left: auto;
+}
+.nav-lists {
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+.nav-link {
+  margin: 0 10px;
+}
+.nav-item{
+  color: #222;
+  text-decoration: none;
+}
+.search-container {
+  height: 64px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  max-width: 90%;
+  margin: 0 auto;
+}
+.search-results {
+  width: 100%;
+  max-width: 90%;
+  margin: 0 auto;
+}
+.result_box {
+  padding: 1rem;
+  border-bottom: 1px solid #555;
+  background: #eee;
+  width: 50%;
+}
+.detail-item {
+  display: flex;
+  margin: 0 auto 10px;
+  align-items: center;
+  border: 1px solid #aaa;
+}
+.detail-item span:first-child {
+  width: 24%;
+  padding: 0.5rem;
+  background: #fff;
+}
+.detail-item span:last-child {
+  margin-left: 1rem;
+  display: flex;
+}
+.add-new-container {
+  padding: 1rem 0;
+}
+.add-new {
+  width: 100%;
+  max-width: 90%;
+  margin: 0 auto;
+}
+.add-new form {
+  max-width: 340px;
+}
