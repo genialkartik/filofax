@@ -12,7 +12,18 @@ const useStyles = makeStyles((theme) => ({
   input: {
     marginBottom: theme.spacing(1),
     width: '90%'
-  }
+  },
+  modalPaper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%,-50%)'
+  },
 }))
 
 function Home() {
@@ -30,8 +41,12 @@ function Home() {
     console.log('form submited');
   }
 
-  const handlePinModal = () => {
-    SetOpenPinModal(!openPinModal);
+  const handlePinModalOpen = () => {
+    SetOpenPinModal(true);
+  }
+
+  const handlePinModalClose = () => {
+    SetOpenPinModal(false);
   }
 
   const handleShowPass = () => {
@@ -58,7 +73,7 @@ function Home() {
         <div className="search-container">
           <div className="searchbar">
             <TextField variant="outlined" type="text" placeholder="Search platform..." size="small" />
-            <Button variant="contained" color="primary" size="small"
+            <Button variant="contained" color="primary" size="medium"
               onClick={toggleAddNew}>Add New</Button>
           </div>
         </div>
@@ -96,7 +111,7 @@ function Home() {
                 <span>Password : </span>
                 <span>
                   <input type="password" value="xyZ@143#" disabled />
-                  <button type="button" onClick={handlePinModal}>
+                  <button type="button" onClick={handlePinModalOpen}>
                     {
                       isPasswordVisible ?
                         <VisibilityOffIcon />
@@ -115,11 +130,13 @@ function Home() {
             </div>
             <Modal
               open={openPinModal}
-              onClose={handlePinModal}
+              onClose={handlePinModalClose}
             >
-              <h3>Secure Verification</h3>
-              <TextField type="password" placeholder="Enter Pin" variant="outlined" label="Pin" />
-              <Button variant="contained" color="primary" onClick={handleShowPass}>Submit</Button>
+              <div className="modalPaper">
+                <h3>Secure Verification</h3>
+                <TextField type="password" placeholder="Enter Pin" variant="outlined" label="Pin" size="small"/>
+                <Button variant="contained" size="medium" color="primary" onClick={handleShowPass}>Submit</Button>
+              </div>
             </Modal>
             <div className="result_box">
               <div className="detail-item">
