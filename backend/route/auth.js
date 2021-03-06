@@ -1,4 +1,5 @@
-const router = require('express').express();
+const express = require('express');
+const router = express();
 const { v4: uuidv4 } = require('uuid');
 
 const User = require('../model/User')
@@ -28,10 +29,11 @@ router.route('/login')
 router.route('/signup')
   .post(async (req, res) => {
     try {
+      console.log(req.body)
       const userId = uuidv4()
       var newUser = new User({
         userid: userId,
-        name: req.body.name,
+        name: req.body.fullname,
         email: req.body.email,
         password: req.body.password,
         pin: req.body.pin
@@ -52,6 +54,18 @@ router.route('/signup')
     }
   })
 
-  module.exports = router;
+router.route('/logout')
+  .get(async (req, res) => {
+    if (req.session.userdata) {
+      req.session.destroy(() => {
+        res.json({ loggedout: true })
+      });
+    }
+    else {
+      res.json({ loggedout: false });
+    }
+  })
+
+module.exports = router;
 
 

@@ -1,4 +1,4 @@
-import { Router } from '@reach/router';
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import './App.css';
 import Home from './templates/Home';
 import Login from './templates/Login';
@@ -8,9 +8,9 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Login path="/" />
-        <SignUp path="/register" />
-        <Home path="/home" />
+        <Route component={Login} exact path="/login" />
+        <Route component={SignUp} exact path="/register" />
+        <Route component={Home} exact path="/" />
       </Router>
     </div>
   );

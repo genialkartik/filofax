@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema({
 	name: {type: String, required: true},
 	email: { type: String, required: true, unique: true },
 	password: { type: String, required: true, minLength: 8 },
-	pin: { type: Number, required: true, min: 4, max: 4 },
+	pin: { type: Number, required: true, min: 4 },
 	date_created: { type: Date, default: Date.now }
 })
 
@@ -15,7 +15,6 @@ userSchema.pre('save', async function (next) {
 	const user = this
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8);
-		user.pin = await bcrypt.hash(user.pin, 8)
 	}
 	next()
 })

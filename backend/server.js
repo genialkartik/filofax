@@ -1,4 +1,5 @@
-const app = require('express').express();
+const express = require('express');
+const app = express();
 const session = require('express-session');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -8,7 +9,7 @@ app.set('port', process.env.PORT || 4000);
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res) => {
+app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
@@ -31,6 +32,9 @@ app.use(session({
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 } // 1 day
 }));
+
+app.use('/auth', require('./route/auth'))
+app.use('/pass', require('./route/passwordContainer'))
 
 app.listen(app.get('port'), () => {
     console.log(`Listening on PORT: ${app.get('port')}`);

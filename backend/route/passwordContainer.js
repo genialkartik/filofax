@@ -1,9 +1,10 @@
-const router = require('express').express();
+const express = require('express');
+const router = express();
 const { v4: uuidv4 } = require('uuid');
 
 const PassContainer = require('../model/PasswordContainers')
 
-route.route('/list')
+router.route('/list')
   .post(async (req, res) => {
     let user = req.session.userdata;
     try {
