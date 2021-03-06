@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from '@reach/router';
 import {
   Button, TextField, makeStyles, Modal
 } from '@material-ui/core';
@@ -8,11 +7,12 @@ import {
   VisibilityOff as VisibilityOffIcon
 } from '@material-ui/icons';
 import axios from 'axios';
+import Header from '../components/Header';
 
 const useStyles = makeStyles((theme) => ({
   input: {
     marginBottom: theme.spacing(1),
-    width: '90%'
+    width: '90%',
   },
   modalPaper: {
     position: 'absolute',
@@ -33,10 +33,6 @@ function Home() {
   const [isAddActive, setAddActive] = useState(false);
   const [openPinModal, SetOpenPinModal] = useState(false);
 
-  const toggleAddNew = () => {
-    setAddActive(!isAddActive);
-  }
-
   const handleAddNew = (e) => {
     e.preventDefault();
     console.log('form submited');
@@ -54,36 +50,24 @@ function Home() {
     setPassVisible(!isPasswordVisible);
   }
 
-  useEffect(()=>{
-    axios.get()
-  },[]);
+  // useEffect(()=>{
+  //   axios.get('')
+  // },[]);
 
   return (
     <>
-      <header className="App-header">
-        <div className="nav-container">
-          <div className="app-brand">
-            <Link to="/home" className="app-brand-link">passManager</Link>
-          </div>
-          <div className="app-links">
-            <ul className="nav-lists">
-              <li className="nav-link">
-                <span className="nav-item">Logout</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </header>
+      <Header/>
       <div className="Home restpage">
         <div className="search-container">
           <div className="searchbar">
             <TextField variant="outlined" type="text" placeholder="Search platform..." size="small" />
-            <Button variant="contained" color="primary" size="medium"
-              onClick={toggleAddNew}>Add New</Button>
+            <Button style={{marginLeft: 'auto'}} variant="contained" color="primary" size="medium"
+              onClick={()=>setAddActive(true)}>Add New</Button>
           </div>
         </div>
-        {isAddActive ?
-          <div className="add-new-container">
+        
+        <Modal open={isAddActive} onClose={()=>setAddActive(false)}>
+          <div className={`add-new-container ${classes.modalPaper}`}>
             <div className="add-new">
               <form onSubmit={(e) => handleAddNew(e)}>
                 <TextField variant="outlined" className={classes.input} type="text" placeholder="Company Name" size="small" />
@@ -95,7 +79,8 @@ function Home() {
               </form>
             </div>
           </div>
-          : null}
+        </Modal>
+        
         <div className="search-results-container">
           <div className="search-results">
 
@@ -115,8 +100,11 @@ function Home() {
               <div className="detail-item" id="pass-view">
                 <span>Password : </span>
                 <span>
-                  <input type="password" value="xyZ@143#" disabled />
-                  <button type="button" onClick={handlePinModalOpen}>
+                  <input style={{width: 'calc(100% - 50px)'}} type="password" value="xyZ@143#" disabled />
+                  <button style={{width: '50px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',}} type="button" onClick={handlePinModalOpen}>
                     {
                       isPasswordVisible ?
                         <VisibilityOffIcon />
@@ -159,8 +147,13 @@ function Home() {
               <div className="detail-item" id="pass-view">
                 <span>Password : </span>
                 <span>
-                  <input type="password" value="xyZ@143#" disabled />
-                  <button type="button">
+                  <input style={{width: 'calc(100% - 50px)'}} type="password" value="xyZ@143#" disabled />
+                  <button style={{width: '50px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',}}
+                    onClick={handlePinModalOpen}
+                    type="button">
                     {
                       isPasswordVisible ?
                         <VisibilityOffIcon />
