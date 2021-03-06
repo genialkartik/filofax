@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@reach/router';
 import {
   Button, TextField, makeStyles, Modal
@@ -7,6 +7,7 @@ import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon
 } from '@material-ui/icons';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -52,6 +53,10 @@ function Home() {
   const handleShowPass = () => {
     setPassVisible(!isPasswordVisible);
   }
+
+  useEffect(()=>{
+    axios.get()
+  },[]);
 
   return (
     <>
@@ -132,7 +137,7 @@ function Home() {
               open={openPinModal}
               onClose={handlePinModalClose}
             >
-              <div className="modalPaper">
+              <div className={classes.modalPaper}>
                 <h3>Secure Verification</h3>
                 <TextField type="password" placeholder="Enter Pin" variant="outlined" label="Pin" size="small"/>
                 <Button variant="contained" size="medium" color="primary" onClick={handleShowPass}>Submit</Button>
