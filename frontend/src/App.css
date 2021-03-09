@@ -45,6 +45,10 @@
   max-width: 90%;
   margin: 0 auto;
 }
+.searchbar{
+  display: flex;
+  width: 100%;
+}
 .search-results {
   width: 100%;
   max-width: 90%;

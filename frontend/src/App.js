@@ -4,7 +4,7 @@ import Home from './templates/Home';
 import Login from './templates/Login';
 import SignUp from './templates/SignUp';
 
-function App() {
+function App(props) {
   return (
     <div className="App">
       <Router>
