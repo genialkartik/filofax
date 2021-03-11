@@ -60,6 +60,7 @@
   border-bottom: 1px solid #555;
   background: #eee;
   width: 50%;
+  float: left;
 }
 .detail-item {
   display: flex;

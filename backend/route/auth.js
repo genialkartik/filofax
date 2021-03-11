@@ -16,7 +16,8 @@ router.route('/login')
         req.session.userdata = {
           userid: cred.userid,
           name: cred.name,
-          email: cred.email
+          email: cred.email,
+          pin: cred.pin
         }
         res.json({ loggedin: true });
       }
@@ -45,6 +46,7 @@ router.route('/signup')
           userid: newuser.userid,
           name: newuser.name,
           email: newuser.email,
+          pin: newuser.pin
         }
         res.json({ created: true })
       }

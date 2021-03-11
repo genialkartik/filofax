@@ -17,7 +17,8 @@ function Header(props) {
     <header className="App-header">
       <div className="nav-container">
         <div className="app-brand">
-          <Link to="/home" className="app-brand-link">passManager</Link>
+          <img src="./passmanager.png" alt="PM" width="40px" height="40px" />
+          <Link to="/" className="app-brand-link">Password Manager</Link>
         </div>
         {login ?
           <div className="app-links">

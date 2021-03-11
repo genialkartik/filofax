@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const passContainer = mongoose.Schema({
   passid: { type: String, required: true, unique: true },
+  user_email: { type: String, required: true },
   title: { type: String, required: true },
   url: String,
   username: String,

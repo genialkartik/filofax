@@ -4,7 +4,9 @@ import {
 } from '@material-ui/core';
 import {
   Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon
+  VisibilityOff as VisibilityOffIcon,
+  FileCopyOutlined as FileCopyOutlinedIcon,
+  FileCopy as FileCopyIcon
 } from '@material-ui/icons';
 import axios from 'axios';
 import Header from '../components/Header';
@@ -16,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
   modalPaper: {
     position: 'absolute',
-    width: 400,
+    width: '40%',
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
@@ -25,16 +27,29 @@ const useStyles = makeStyles((theme) => ({
     left: '50%',
     transform: 'translate(-50%,-50%)'
   },
+  passLi: {
+    position: 'relative',
+    float: 'left',
+    padding: "10px",
+    margin: 10,
+    borderBottom: "1px solid #555",
+    background: "#eee",
+    width: "45%",
+    listStyle: 'none',
+  },
 }))
 
 function Home(props) {
   const classes = useStyles();
-  const [isPasswordVisible, setPassVisible] = useState(false);
+  const [isPasswordCopied, setPassCopied] = useState(false);
   const [isAddActive, setAddActive] = useState(false);
   const [openPinModal, SetOpenPinModal] = useState(false);
   const [formInput, setFormInput] = useState({});
   const [passList, setPassList] = useState([]);
   const [pin, setPin] = useState();
+  const [passwordToShow, setPasswordToShow] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isPassCopyModal, setPassCopyModal] = useState(false);
 
   useEffect(() => {
     axios.get('/auth/login')
@@ -45,7 +60,6 @@ function Home(props) {
       })
     axios.get('/pass/list')
       .then(res => {
-        console.log(res.data)
         setPassList(res.data ? res.data : []);
       })
       .catch(error => {
@@ -62,30 +76,80 @@ function Home(props) {
     })
   }
 
-  const handleAddNew = async (e) => {
+  const handleAddNewPassContatiner = async (e) => {
     e.preventDefault();
-    console.log(formInput);
     await axios.post('/pass/add', {
       formInput
-    }).then(res => {
-      console.log(res.data);
     })
+      .then(res => {
+        if (res.data.pass_container_added) {
+          setPassList(prev_passList => [...prev_passList, res.data.containerData]);
+        }
+        setAddActive(false);
+      })
       .catch(error => {
         console.log(error);
-
+        setAddActive(false);
       })
   }
 
-  const handlePinModalOpen = () => {
+  const showPasswordModal = async (password) => {
     SetOpenPinModal(true);
+    setPasswordToShow(password);
   }
 
-  const handlePinModalClose = () => {
+  const pinModalClose = () => {
     SetOpenPinModal(false);
+    setShowPassword(false);
+    setPasswordToShow('');
   }
 
-  const handleShowPass = async() => {
-    setPassVisible(!isPasswordVisible);
+  const closePassCopyModal = () => {
+    setPassCopyModal(false);
+  }
+
+  const handleShowPass = async () => {
+    await axios.post('/pass/list', { pin })
+      .then(res => {
+        if (res.data.valid_pin) {
+          setShowPassword(true)
+        } else {
+          setShowPassword(false);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        setShowPassword(false);
+      })
+  }
+
+  const checkPinSession = async (pass) => {
+    await axios.get('/pass/pin')
+      .then(res => {
+        console.log(res.data);
+        if (res.data.is_session) {
+          // navigator.clipboard.writeText(pass)
+          alert('session found')
+          setPassCopyModal(false);
+        } else {
+          setPassCopyModal(true);
+        }
+      })
+  }
+
+  const handlePinSession = async () => {
+    await axios.post('/pass/pin', { pin })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.is_session) {
+          // navigator.clipboard.writeText(pass)
+          alert('session created')
+          setPassCopyModal(false);
+        }
+        else {
+          setPassCopyModal(true);
+        }
+      })
   }
 
   return (
@@ -103,7 +167,7 @@ function Home(props) {
         <Modal open={isAddActive} onClose={() => setAddActive(false)}>
           <div className={`add-new-container ${classes.modalPaper}`}>
             <div className="add-new">
-              <form onSubmit={handleAddNew} noValidate autoComplete="off">
+              <form onSubmit={handleAddNewPassContatiner} noValidate autoComplete="off">
                 <TextField
                   name="title"
                   value={formInput.title}
@@ -142,56 +206,76 @@ function Home(props) {
 
         <div className="search-results-container">
           <div className="search-results">
-            {passList && passList.length > 0 ?
-              passList.map(pass => (
+            <ul>
+              {passList && passList.length > 0 ?
+                passList.map(pass => (
+                  <li className={classes.passLi} key={pass._id}>
+                    <div className="detail-item">
+                      <span>TItle : </span><span>{pass.title}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span>url : </span><span><a target="_blank" href={pass.url} rel="noreferrer">{pass.url}</a></span>
+                    </div>
+                    <div className="detail-item">
+                      <span>Username : </span><span>{pass.username}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span>Email : </span><span>{pass.email}</span>
+                    </div>
+                    <div className="detail-item" id="pass-view">
+                      <span>Password : </span>
+                      <span>
+                        {/* <input style={{ width: 'calc(100% - 50px)' }} type="password" value={pass.password} disabled /> */}
+                        <button style={{
+                          width: '50px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }} type="button" onClick={() => checkPinSession(pass.password)}>
+                          {isPasswordCopied ? <FileCopyIcon /> : <FileCopyOutlinedIcon />}
+                        </button>
+                        <button style={{
+                          width: '50px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }} type="button" onClick={() => showPasswordModal(pass.password)}>
+                          <VisibilityIcon />
+                        </button>
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <span>Note: </span>
+                      <span>
+                        <textarea placeholder="Add your notes..." cols="32" rows="1">{pass.note}</textarea>
+                      </span>
+                    </div>
+                  </li>
+                )) :
                 <div className="result_box">
                   <div className="detail-item">
-                    <span>TItle : </span><span>{pass.title}</span>
-                  </div>
-                  <div className="detail-item">
-                    <span>url : </span><span><a target="_blank" href={pass.url}>{pass.url}</a></span>
-                  </div>
-                  <div className="detail-item">
-                    <span>Username : </span><span>{pass.username}</span>
-                  </div>
-                  <div className="detail-item">
-                    <span>Email : </span><span>{pass.email}</span>
-                  </div>
-                  <div className="detail-item" id="pass-view">
-                    <span>Password : </span>
-                    <span>
-                      <input style={{ width: 'calc(100% - 50px)' }} type="password" value={pass.password} disabled />
-                      <button style={{
-                        width: '50px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }} type="button" onClick={handlePinModalOpen}>
-                        {
-                          isPasswordVisible ?
-                            <VisibilityOffIcon />
-                            :
-                            <VisibilityIcon />
-                        }
-                      </button>
-                    </span>
-                  </div>
-                  <div className="detail-item">
-                    <span>Note: </span>
-                    <span>
-                      <textarea placeholder="Add your notes..." cols="32" rows="1">{pass.note}</textarea>
-                    </span>
+                    <span>No password list found</span>
                   </div>
                 </div>
-              )) :
-              <div className="result_box">
-                <div className="detail-item">
-                  <span>No password list found</span>
-                </div>
-              </div>}
+              }
+            </ul>
+
+            <Modal
+              open={isPassCopyModal}
+              onClose={closePassCopyModal}
+            >
+              <div className={classes.modalPaper}>
+                <h3>Secure Verification</h3>
+                <TextField
+                  onChange={e => setPin(e.target.value)}
+                  type="password" placeholder="Enter Pin" variant="outlined" label="Pin" size="small" />
+                <Button variant="contained" size="medium" color="primary" onClick={handlePinSession}>Submit</Button>
+              </div>
+            </Modal>
+
             <Modal
               open={openPinModal}
-              onClose={handlePinModalClose}
+              onClose={pinModalClose}
             >
               <div className={classes.modalPaper}>
                 <h3>Secure Verification</h3>
@@ -199,6 +283,23 @@ function Home(props) {
                   onChange={e => setPin(e.target.value)}
                   type="password" placeholder="Enter Pin" variant="outlined" label="Pin" size="small" />
                 <Button variant="contained" size="medium" color="primary" onClick={handleShowPass}>Submit</Button>
+                <br />
+                <div>
+                  <p>Password:
+                    <input style={{ width: 'calc(100% - 50px)' }} type={showPassword ? 'text' : 'password'} value={passwordToShow} disabled />
+                  </p>
+                </div>
+                <button style={{
+                  width: '50px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }} type="button" onClick={() => {
+                  navigator.clipboard.writeText(passwordToShow)
+                  setPassCopied(true);
+                }}>
+                  {isPasswordCopied ? <FileCopyIcon /> : <FileCopyOutlinedIcon />}
+                </button>
               </div>
             </Modal>
           </div>
