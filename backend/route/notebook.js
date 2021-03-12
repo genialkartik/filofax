@@ -41,7 +41,7 @@ router.route('/notebook')
     let user = req.session.userdata;
     try {
       if (!user) throw 'nosession';
-      const notebook_resp = await Notebook.updateOne({ notebookid: req.session.notebookid }, {
+      const notebook_resp = await Notebook.updateOne({ notebookid: req.body.notebookid }, {
         title: req.body.title
       })
       res.json({ updated: notebook_resp.nModified == 1 ? true : false });
@@ -89,8 +89,8 @@ router.route('/note/:notebookid')
         noteid: uuidv4(),
         user_email: req.session.userdata.email,
         notebookid: req.body.notebookid,
-        title: req.body.note_title,
-        subtitle: req.body.note_subtitle,
+        title: req.body.title,
+        subtitle: req.body.subtitle,
         description: req.body.description
       });
       // add note
