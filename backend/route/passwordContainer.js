@@ -10,7 +10,7 @@ router.route('/list')
     let user = req.session.userdata;
     try {
       if (!user) throw 'nosession';
-      const password_list = await PassContainer.find();
+      const password_list = await PassContainer.find({ email: req.session.userdata.email });
       res.json(password_list.length > 0 ? password_list : [])
     } catch (error) {
       console.log(error);
