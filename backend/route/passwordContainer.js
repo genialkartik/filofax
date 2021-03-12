@@ -72,7 +72,6 @@ router.route('/pin')
     try {
       if (!user) throw 'nosession';
       const pin_session_resp = await User.findOne({ email: req.session.userdata.email });
-      console.log(pin_session_resp)
       res.json({ is_session: pin_session_resp.pinSession == true ? true : false });
     } catch (error) {
       console.log(error);
@@ -88,14 +87,12 @@ router.route('/pin')
       const pin_session_resp = await User.updateOne({ email: req.session.userdata.email }, {
         pinSession: true // session is active
       });
-      console.log(pin_session_resp);
       if (pin_session_resp.nModified == 1) {
         setTimeout(async () => {
-          const update_resp = await User.updateOne({ email: req.session.userdata.email }, {
+          await User.updateOne({ email: req.session.userdata.email }, {
             pinSession: false
           });
-          console.log(update_resp);
-        }, 10000); // 10 Sec
+        }, 1000 * 60 * 60); // 1hr 
         res.json({ is_session: true })
       } else {
         res.json({ is_session: false })

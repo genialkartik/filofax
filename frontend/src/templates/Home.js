@@ -49,6 +49,7 @@ function Home(props) {
   const [passwordToShow, setPasswordToShow] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isPassCopyModal, setPassCopyModal] = useState(false);
+  const [currPass, setCurrPass] = useState(null);
 
   useEffect(() => {
     axios.get('/auth/login')
@@ -123,31 +124,40 @@ function Home(props) {
   }
 
   const checkPinSession = async (pass) => {
+    setCurrPass(pass);
+    // check for Pin Session
     await axios.get('/pass/pin')
       .then(res => {
-        console.log(res.data);
         if (res.data.is_session) {
-          // navigator.clipboard.writeText(pass)
-          alert('session found')
+          navigator.clipboard.writeText(pass)
           setPassCopyModal(false);
         } else {
           setPassCopyModal(true);
         }
       })
+      .catch(error => {
+        console.log(error)
+        setPassCopyModal(true);
+      })
   }
 
+  // handle PinSession
   const handlePinSession = async () => {
     await axios.post('/pass/pin', { pin })
       .then(res => {
-        console.log(res.data);
         if (res.data.is_session) {
-          // navigator.clipboard.writeText(pass)
-          alert('session created')
+          navigator.clipboard.writeText(currPass);
           setPassCopyModal(false);
+          setCurrPass(null);
         }
         else {
           setPassCopyModal(true);
+          setCurrPass(null);
         }
+      })
+      .catch(error => {
+        console.log(error);
+        setCurrPass(null);
       })
   }
 
