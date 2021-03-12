@@ -71,7 +71,9 @@ router.route('/pin')
     let user = req.session.userdata;
     try {
       if (!user) throw 'nosession';
-      res.json({ is_session: req.session.pinsession ? true : false })
+      const pin_session_resp = await User.findOne({ email: req.session.userdata.email });
+      console.log(pin_session_resp)
+      res.json({ is_session: pin_session_resp.pinSession == true ? true : false });
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
@@ -81,22 +83,22 @@ router.route('/pin')
   // create pin session
   .post(async (req, res) => {
     let user = req.session.userdata;
-    console.log(req.body)
     try {
       if (!user) throw 'nosession';
-      if (req.session.pinsession) {
-        res.json({ is_session: true });
+      const pin_session_resp = await User.updateOne({ email: req.session.userdata.email }, {
+        pinSession: true // session is active
+      });
+      console.log(pin_session_resp);
+      if (pin_session_resp.nModified == 1) {
+        setTimeout(async () => {
+          const update_resp = await User.updateOne({ email: req.session.userdata.email }, {
+            pinSession: false
+          });
+          console.log(update_resp);
+        }, 10000); // 10 Sec
+        res.json({ is_session: true })
       } else {
-        if (req.session.userdata.pin === Number(req.body.pin)) {
-          // create session
-          req.session.pinsession = {
-            session_duration: 86400000, // miliseconds = 1 hr
-          }
-          setTimeout(() => req.session.pinsession = null, 1000 * 60 * 60);
-          res.json({ is_session: true })
-        } else {
-          res.json({ is_session: false })
-        }
+        res.json({ is_session: false })
       }
     } catch (error) {
       console.log(error);

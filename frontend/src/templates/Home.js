@@ -4,7 +4,6 @@ import {
 } from '@material-ui/core';
 import {
   Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
   FileCopyOutlined as FileCopyOutlinedIcon,
   FileCopy as FileCopyIcon
 } from '@material-ui/icons';
