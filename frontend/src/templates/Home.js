@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Home(props) {
   const classes = useStyles();
-  const [isPasswordCopied, setPassCopied] = useState(false);
+  const [passwordCopiedOf, setPassCopiedOf] = useState('');
   const [isAddActive, setAddActive] = useState(false);
   const [openPinModal, SetOpenPinModal] = useState(false);
   const [formInput, setFormInput] = useState({});
@@ -123,7 +123,7 @@ function Home(props) {
       })
   }
 
-  const checkPinSession = async (pass) => {
+  const checkPinSession = async (pass, id) => {
     setCurrPass(pass);
     // check for Pin Session
     await axios.get('/pass/pin')
@@ -131,6 +131,7 @@ function Home(props) {
         if (res.data.is_session) {
           navigator.clipboard.writeText(pass)
           setPassCopyModal(false);
+          setPassCopiedOf(id);
         } else {
           setPassCopyModal(true);
         }
@@ -240,8 +241,8 @@ function Home(props) {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                        }} type="button" onClick={() => checkPinSession(pass.password)}>
-                          {isPasswordCopied ? <FileCopyIcon /> : <FileCopyOutlinedIcon />}
+                        }} type="button" onClick={() => checkPinSession(pass.password, pass._id)}>
+                          {passwordCopiedOf===pass._id ? <FileCopyIcon /> : <FileCopyOutlinedIcon />}
                         </button>
                         <button style={{
                           width: '50px',
@@ -305,9 +306,9 @@ function Home(props) {
                   justifyContent: 'center',
                 }} type="button" onClick={() => {
                   navigator.clipboard.writeText(passwordToShow)
-                  setPassCopied(true);
+                  setPassCopiedOf('pin');
                 }}>
-                  {isPasswordCopied ? <FileCopyIcon /> : <FileCopyOutlinedIcon />}
+                  {passwordCopiedOf === 'pin' ? <FileCopyIcon /> : <FileCopyOutlinedIcon />}
                 </button>
               </div>
             </Modal>
