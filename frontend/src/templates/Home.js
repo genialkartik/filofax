@@ -45,6 +45,7 @@ function Home(props) {
   const [openPinModal, SetOpenPinModal] = useState(false);
   const [formInput, setFormInput] = useState({});
   const [passList, setPassList] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
   const [pin, setPin] = useState();
   const [passwordToShow, setPasswordToShow] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -61,6 +62,7 @@ function Home(props) {
     axios.get('/pass/list')
       .then(res => {
         setPassList(res.data ? res.data : []);
+        setFilteredList(res.data ? res.data : []);
       })
       .catch(error => {
         console.log(error);
@@ -84,6 +86,7 @@ function Home(props) {
       .then(res => {
         if (res.data.pass_container_added) {
           setPassList(prev_passList => [...prev_passList, res.data.containerData]);
+          setFilteredList(prev_filteredList => [...prev_filteredList, res.data.containerData])
         }
         setAddActive(false);
       })
@@ -162,13 +165,19 @@ function Home(props) {
       })
   }
 
+  // handle search
+  const handleSearchResult = (text) => {
+    const resultList = passList.filter(pass=>pass.title.toLowerCase().indexOf(text)>-1);
+    setFilteredList(resultList);
+  }
+
   return (
     <>
       <Header />
       <div className="Home restpage">
         <div className="search-container">
           <div className="searchbar">
-            <TextField variant="outlined" type="text" placeholder="Search platform..." size="small" />
+            <TextField variant="outlined" type="text" placeholder="Search platform..." size="small" onChange={(e)=>handleSearchResult(e.target.value)}/>
             <Button style={{ marginLeft: 'auto' }} variant="contained" color="primary" size="medium"
               onClick={() => setAddActive(true)}>Add New</Button>
           </div>
@@ -217,8 +226,8 @@ function Home(props) {
         <div className="search-results-container">
           <div className="search-results">
             <ul>
-              {passList && passList.length > 0 ?
-                passList.map(pass => (
+              {filteredList && filteredList.length > 0 ?
+                filteredList.map(pass => (
                   <li className={classes.passLi} key={pass._id}>
                     <div className="detail-item">
                       <span>TItle : </span><span>{pass.title}</span>
