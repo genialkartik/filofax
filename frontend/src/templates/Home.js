@@ -179,7 +179,10 @@ function Home(props) {
           <div className="searchbar">
             <TextField variant="outlined" type="text" placeholder="Search platform..." size="small" onChange={(e)=>handleSearchResult(e.target.value)}/>
             <Button style={{ marginLeft: 'auto' }} variant="contained" color="primary" size="medium"
-              onClick={() => setAddActive(true)}>Add New</Button>
+              onClick={() => {
+                setAddActive(true);
+                setFormInput({});
+              }}>Add New</Button>
           </div>
         </div>
 
