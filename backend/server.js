@@ -35,6 +35,7 @@ app.use(session({
 
 app.use('/auth', require('./route/auth'))
 app.use('/pass', require('./route/passwordContainer'))
+app.use('/notes', require('./route/notebook'))
 
 app.listen(app.get('port'), () => {
     console.log(`Listening on PORT: ${app.get('port')}`);
