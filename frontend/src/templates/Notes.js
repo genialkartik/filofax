@@ -4,78 +4,78 @@ import {
   TextField
 } from '@material-ui/core';
 
-const useStyles = makeStyles(theme=>({
-  main_body:{
+const useStyles = makeStyles(theme => ({
+  main_body: {
     height: '100vh'
   },
-  notes_body:{
+  notes_body: {
     display: 'grid',
     height: '100%',
     gridTemplateColumns: '8rem 12rem auto',
     backgroundColor: '#0F0F0F'
   },
-  notes_label_area:{
+  notes_label_area: {
     backgroundColor: '#212121'
   },
-  notes_list_area:{
+  notes_list_area: {
     backgroundColor: '#121212'
   },
-  notes_view_area:{
+  notes_view_area: {
     display: 'grid',
     gridTemplateRows: '3rem 8rem auto'
   },
-  newNotesContainer:{
+  newNotesContainer: {
     padding: '0.5rem',
     display: 'flex',
     justifyContent: 'center',
     borderBottom: '1px solid #555'
   },
-  noteLabelListSec:{
+  noteLabelListSec: {
     padding: '0.5rem 0'
   },
-  noteLabelLists:{
+  noteLabelLists: {
     margin: 0,
     padding: 0,
     listStyle: 'none'
   },
-  noteLabelItem:{
+  noteLabelItem: {
     padding: '0.5rem 0 0.5rem 0.6rem',
     borderBottom: '1px solid #363636'
   },
-  notelabel:{
+  notelabel: {
     color: '#1aa4e8',
     textDecoration: 'none',
     cursor: 'pointer',
-    '&:hover':{
+    '&:hover': {
       color: '#1a88f8'
     }
   },
-  notesListContainer:{},
-  notesPreviewLists:{
+  notesListContainer: {},
+  notesPreviewLists: {
     margin: 0,
     padding: 0,
     listStyle: 'none'
   },
-  notesPreviewItem:{
+  notesPreviewItem: {
     padding: '0.5rem',
     borderBottom: '1px solid #555'
   },
-  notesPreview:{
-    cursor:'pointer'
+  notesPreview: {
+    cursor: 'pointer'
   },
-  actionContainer:{
-    display:"flex",
-    justifyContent:'end',
-    alignItems:'center'
+  actionContainer: {
+    display: "flex",
+    justifyContent: 'end',
+    alignItems: 'center'
   },
-  title:{
-    color:'#fff',
+  title: {
+    color: '#fff',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     margin: 0
   },
-  desc:{
+  desc: {
     color: '#bbb',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
@@ -83,20 +83,20 @@ const useStyles = makeStyles(theme=>({
     margin: 0,
     fontSize: '14px'
   },
-  input:{
+  input: {
     width: '100%',
     color: '#fff',
     borderBottomColor: '#fff'
   },
-  descInputContainer:{
+  descInputContainer: {
     overflow: 'hidden',
     height: '100%'
   },
   textarea: {
     color: '#fff',
-    width:"100%",
+    width: "100%",
     height: '100%',
-    backgroundColor:'transparent',
+    backgroundColor: 'transparent',
     border: 'none',
     padding: '1rem 0.7rem',
     fontSize: '15px',
@@ -106,12 +106,12 @@ const useStyles = makeStyles(theme=>({
 
 function Notes() {
   const classes = useStyles();
-  return(
+  return (
     <div className={classes.main_body}>
       <div className={classes.notes_body}>
         <div className={classes.notes_label_area}>
           <div className={classes.newNotesContainer}>
-            <Button style={{textTransform: 'capitalize'}} size="small" color="primary" variant="contained">New Notebook</Button>
+            <Button style={{ textTransform: 'capitalize' }} size="small" color="primary" variant="contained">New Notebook</Button>
           </div>
           <div className={classes.noteLabelListSec}>
             <ul className={classes.noteLabelLists}>
@@ -126,7 +126,7 @@ function Notes() {
         </div>
         <div className={classes.notes_list_area}>
           <div className={classes.newNotesContainer}>
-            <Button style={{textTransform: 'capitalize'}} size="small" color="primary" variant="contained">New Note</Button>
+            <Button style={{ textTransform: 'capitalize' }} size="small" color="primary" variant="contained">New Note</Button>
           </div>
           <div className={classes.notesListContainer}>
             <ul className={classes.notesPreviewLists}>
@@ -155,17 +155,17 @@ function Notes() {
         </div>
         <div className={classes.notes_view_area}>
           <div className={classes.actionContainer}>
-            <Button style={{textTransform: 'capitalize'}} size="small" color="primary" variant="contained">Save</Button>
+            <Button style={{ textTransform: 'capitalize' }} size="small" color="primary" variant="contained">Save</Button>
             <Button style={{
               textTransform: 'capitalize',
               margin: '0 0.5rem'
             }} size="small" color="primary" variant="contained">Cancel</Button>
           </div>
           <div className={classes.titleInputContainer}>
-            <TextField style={{width: '100%'}} inputProps={{
+            <TextField style={{ width: '100%' }} inputProps={{
               className: classes.input
             }} variant="filled" placeholder="Enter title here..." />
-            <TextField style={{width: '100%'}} inputProps={{
+            <TextField style={{ width: '100%' }} inputProps={{
               className: classes.input
             }} variant="filled" placeholder="Enter subtitle here..." />
           </div>
