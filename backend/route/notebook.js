@@ -55,8 +55,10 @@ router.route('/notebook')
     let user = req.session.userdata;
     try {
       if (!user) throw 'nosession';
+      console.log(req.body)
       const delete_notebook = await Notebook.deleteOne({ notebookid: req.body.notebookid });
-      res.json({ deleted: delete_notebook ? true : false })
+      console.log(delete_notebook)
+      res.json({ deleted: delete_notebook.n === 1 ? true : false })
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
@@ -89,9 +91,9 @@ router.route('/note/:notebookid')
         noteid: uuidv4(),
         user_email: req.session.userdata.email,
         notebookid: req.body.notebookid,
-        title: req.body.title,
-        subtitle: req.body.subtitle,
-        description: req.body.description
+        title: req.body.notedata.title,
+        subtitle: req.body.notedata.subtitle,
+        description: req.body.notedata.description
       });
       // add note
       const saved_note = await new_note.save();
@@ -108,9 +110,9 @@ router.route('/note/:notebookid')
       if (!user) throw 'nosession';
       // edit note title
       const notebook_resp = await Note.updateOne({ noteid: req.body.noteid }, {
-        title: req.body.title,
-        subtitle: req.body.subtitle,
-        description: req.body.description
+        title: req.body.notedata.title,
+        subtitle: req.body.notedata.subtitle,
+        description: req.body.notedata.description
       });
       res.json({ updated: notebook_resp.nModified == 1 ? true : false });
     } catch (error) {
