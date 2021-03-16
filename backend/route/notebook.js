@@ -16,7 +16,7 @@ router.route('/notebook')
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
-      else res.json({ notebookList: [] });
+      else res.json({ notebookList: false });
     }
   })
   .post(async (req, res) => {
@@ -30,11 +30,11 @@ router.route('/notebook')
       });
       // save new Notebook
       const notebook_resp = await newNotebook.save();
-      res.json({ notebook_added: notebook_resp ? notebook_resp : {} });
+      res.json({ notebook_added: notebook_resp ? notebook_resp : false });
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
-      else res.json({ notebook_added: {} });
+      else res.json({ notebook_added: false });
     }
   })
   .put(async (req, res) => {
@@ -55,9 +55,8 @@ router.route('/notebook')
     let user = req.session.userdata;
     try {
       if (!user) throw 'nosession';
-      console.log(req.body)
       const delete_notebook = await Notebook.deleteOne({ notebookid: req.body.notebookid });
-      console.log(delete_notebook)
+      const delete_notes = await Note.deleteMany({ notebookid: req.body.notebookid });
       res.json({ deleted: delete_notebook.n === 1 ? true : false })
     } catch (error) {
       console.log(error);
@@ -80,7 +79,7 @@ router.route('/note/:notebookid')
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
-      else res.json({ notesList: [] });
+      else res.json({ notesList: false });
     }
   })
   .post(async (req, res) => {
@@ -101,7 +100,7 @@ router.route('/note/:notebookid')
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
-      else res.json({ note_added: {} });
+      else res.json({ note_added: false });
     }
   })
   .put(async (req, res) => {
@@ -127,7 +126,7 @@ router.route('/note/:notebookid')
       if (!user) throw 'nosession';
       // delete note
       const delete_note = await Notebook.deleteOne({ noteid: req.body.noteid });
-      res.json({ deleted: delete_note ? true : false });
+      res.json({ deleted: delete_note.n ? true : false });
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });

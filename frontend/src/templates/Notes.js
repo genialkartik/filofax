@@ -8,6 +8,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
 } from '@material-ui/icons';
+import Header from '../components/Header';
 
 function Notes(props) {
   const classes = useStyles();
@@ -17,7 +18,6 @@ function Notes(props) {
   const [notesList, setNotesList] = useState([]);
   const [editNotebook, setEditNotebook] = useState(null);
   const [newNoteBool, setNewNoteBool] = useState(false);
-  const [formInput, setFormInput] = useState({});
   const [currNotebookId, setCurrNotebookId] = useState();
   const [currNoteId, setCurrNoteId] = useState(null);
   // Note Data
@@ -29,6 +29,12 @@ function Notes(props) {
 
   useEffect(() => {
     (async () => {
+      await axios.get('/auth/login')
+        .then(res => {
+          if (!res.data.loggedin) {
+            window.location.replace('/login');
+          }
+        })
       await axios.get('/notes/notebook')
         .then(res => {
           if (res.data.notebookList.length > 0) {
@@ -65,18 +71,21 @@ function Notes(props) {
     await axios.get(`/notes/note/${notebookid}`)
       .then(res => {
         if (res.data.notesList.length > 0) {
-          setNotesList(res.data.notesList ? res.data.noteList : []);
-          setCurrNoteId(res.data.noteList[0].noteid);
+          setNotesList(res.data.notesList ? res.data.notesList : []);
+          setCurrNoteId(res.data.notesList[0].noteid);
         } else {
           setNotesList([]);
           setCurrNoteId(null);
         }
+        setNoteTitle('');
+        setNoteSubtitle('');
+        setNoteDescription('');
       })
       .catch(error => {
         console.log(error);
         setNotesList([]);
         setCurrNoteId(null);
-        setMsg('Something went Strong');
+        setMsg('Something went wrong');
         setSnackOpen(true);
         setTimeout(() => setSnackOpen(false), 1000);
       })
@@ -88,14 +97,41 @@ function Notes(props) {
       await axios.post('/notes/notebook', {
         title: notebookTitle
       })
-        .then(res => {
+        .then(async res => {
           console.log(res.data)
           setOpenNotebookDialog(false);
-          setNotebookList(notebooklist => [...notebooklist, res.data.notebook_added])
-          setCurrNotebookId(res.data.notebook_added.notebookid)
-          setMsg('New Notebook Created')
-          setSnackOpen(true);
-          setTimeout(() => setSnackOpen(false), 1000)
+          if (res.data.notebook_added) {
+            setNotebookList(notebooklist => [...notebooklist, res.data.notebook_added])
+            setCurrNotebookId(res.data.notebook_added.notebookid);
+            await axios.get(`/notes/note/${res.data.notebook_added.notebookid}`)
+              .then(res => {
+                if (res.data.notesList.length > 0) {
+                  setNotesList(res.data.notesList ? res.data.notesList : []);
+                  setCurrNoteId(res.data.notesList[0].noteid);
+                } else {
+                  setNotesList([]);
+                  setCurrNoteId(null);
+                }
+              })
+              .catch(error => {
+                console.log(error);
+                setNotesList([]);
+                setCurrNoteId(null);
+                setMsg('Something went wrong');
+                setSnackOpen(true);
+                setTimeout(() => setSnackOpen(false), 1000);
+              })
+            setNoteTitle('');
+            setNoteSubtitle('');
+            setNoteDescription('');
+            setMsg('New Notebook Created');
+            setSnackOpen(true);
+            setTimeout(() => setSnackOpen(false), 1000)
+          } else {
+            setMsg('Unable to create new NoteBook');
+            setSnackOpen(true);
+            setTimeout(() => setSnackOpen(false), 2000)
+          }
         })
         .catch(error => {
           console.log(error);
@@ -123,6 +159,7 @@ function Notes(props) {
                   date_created: editNotebook.date_created
                 })
               }
+              return {};
             });
             setNotebookList(notebookList_replica);
             setOpenNotebookDialog(false);
@@ -149,12 +186,13 @@ function Notes(props) {
       data: { notebookid: _notebookid }
     })
       .then(res => {
-        console.log(res.data);
         if (res.data.deleted) {
           let not_delete_notebooks = notebookList.filter(nb => nb.notebookid !== _notebookid);
           setNotebookList(not_delete_notebooks);
           setCurrNotebookId(notebookList.length > 0 ? notebookList[0].notebookid : null);
+          setNotesList([]);
         } else {
+          setNotesList([]);
           setMsg('Unable to delete');
           setSnackOpen(true);
           setTimeout(() => setSnackOpen(false), 1000);
@@ -162,35 +200,45 @@ function Notes(props) {
       })
       .catch(error => {
         console.log(error)
+        setNotesList([]);
         setMsg('Something went Strong');
         setSnackOpen(true);
         setTimeout(() => setSnackOpen(false), 1000);
       })
-    console.log(currNotebookId);
-  }
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormInput({
-      ...formInput,
-      [name]: value
-    })
+    setNoteTitle('');
+    setNoteSubtitle('');
+    setNoteDescription('');
   }
 
   const saveNewNote = async () => {
     console.log(currNoteId)
     console.log(currNotebookId)
+    if (!noteTitle) {
+      setMsg('Please Enter Note Title')
+      setSnackOpen(true);
+      setTimeout(() => setSnackOpen(false), 2000)
+    }
     // create new note
-    if (!currNoteId && currNotebookId) {
+    else if (!currNoteId && currNotebookId) {
       await axios.post('/notes/note/notebookid', {
         notebookid: currNotebookId,
-        notedata: formInput
+        notedata: {
+          title: noteTitle,
+          subtitle: noteSubtitle,
+          description: noteDescription
+        }
       })
         .then(res => {
-          setNotesList(notes => [...notes, res.data.note_added]);
-          setMsg('New Note Created')
-          setSnackOpen(true);
-          setTimeout(() => setSnackOpen(false), 1000)
+          if (res.data.note_added) {
+            setNotesList(notes => [...notes, res.data.note_added]);
+            setMsg('New Note Created')
+            setSnackOpen(true);
+            setTimeout(() => setSnackOpen(false), 1000)
+          } else {
+            setMsg('Please Insert Correct Input')
+            setSnackOpen(true);
+            setTimeout(() => setSnackOpen(false), 2000)
+          }
         })
         .catch(error => {
           console.log(error);
@@ -198,12 +246,17 @@ function Notes(props) {
           setSnackOpen(true);
           setTimeout(() => setSnackOpen(false), 1000)
         })
-    } else if (currNoteId && currNotebookId) {
-      // edit note
+    }
+    // edit note
+    else if (currNoteId && currNotebookId) {
       await axios.put('/notes/note/notebookid', {
         notebookid: currNotebookId,
         noteid: currNoteId,
-        notedata: formInput
+        notedata: {
+          title: noteTitle,
+          subtitle: noteSubtitle,
+          description: noteDescription
+        }
       })
         .then(async (res) => {
           if (res.data.updated) {
@@ -264,6 +317,7 @@ function Notes(props) {
 
   return (
     <div className={classes.main_body}>
+      <Header />
       <div className={classes.notes_body}>
         <div className={classes.notes_label_area}>
           <div className={classes.newNotesContainer}>
@@ -363,7 +417,7 @@ function Notes(props) {
         <div className={classes.notes_view_area}>
           <div className={classes.actionContainer}>
             <TextField style={{ width: '100%' }}
-              onChange={handleInputChange}
+              onChange={(e) => setNoteTitle(e.target.value)}
               name='title'
               value={noteTitle ? noteTitle : ''}
               inputProps={{ className: classes.inputNote }}
@@ -394,7 +448,7 @@ function Notes(props) {
           <div className={classes.titleInputContainer}>
             <TextField style={{ width: '100%' }}
               name='subtitle'
-              onChange={handleInputChange}
+              onChange={(e) => setNoteSubtitle(e.target.value)}
               value={noteSubtitle ? noteSubtitle : ''}
               inputProps={{ className: classes.inputSubtitle }}
               variant="filled"
@@ -403,7 +457,7 @@ function Notes(props) {
           <div className={classes.descInputContainer}>
             <textarea
               name='description'
-              onChange={handleInputChange}
+              onChange={(e) => setNoteDescription(e.target.value)}
               className={classes.textarea}
               placeholder="Enter description here..."
               value={noteDescription ? noteDescription : ''}>
@@ -459,6 +513,7 @@ const useStyles = makeStyles(theme => ({
     listStyle: 'none'
   },
   noteLabelItem: {
+    cursor: 'pointer',
     padding: '0.5rem 0 0.5rem 0.6rem',
     borderBottom: '1px solid #282828'
   },
