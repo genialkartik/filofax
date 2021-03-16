@@ -26,7 +26,7 @@ function Login(props) {
   const [msg, setMsg] = useState('')
 
   useEffect(() => {
-    axios.get('/auth/login')
+    axios.get('https://filofax.herokuapp.com/auth/login')
       .then(res => {
         if (res.data.loggedin) {
           setLoginClicked(false)
@@ -40,7 +40,7 @@ function Login(props) {
   const signIn = (e) => {
     e.preventDefault();
     setLoginClicked(true);
-    axios.post('/auth/login', { email, password })
+    axios.post('https://filofax.herokuapp.com/auth/login', { email, password })
       .then(res => {
         setLoginClicked(false)
         setSnackOpen(true)

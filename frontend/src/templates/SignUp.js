@@ -29,7 +29,7 @@ function SignUp(props) {
   const [loginClicked, setLoginClicked] = useState(false)
 
   useEffect(() => {
-    axios.get('/auth/login')
+    axios.get('https://filofax.herokuapp.com/auth/login')
       .then(res => {
         if (res.data.loggedin) {
           setLoginClicked(false)
@@ -43,7 +43,7 @@ function SignUp(props) {
   const signUp = async (e) => {
     e.preventDefault();
     setLoginClicked(true);
-    await axios.post('/auth/signup', {
+    await axios.post('https://filofax.herokuapp.com/auth/signup', {
       fullname, email, password, pin
     })
       .then(res => {

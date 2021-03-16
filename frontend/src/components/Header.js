@@ -7,7 +7,7 @@ function Header(props) {
 
 
   useEffect(() => {
-    axios.get('/auth/login')
+    axios.get('https://filofax.herokuapp.com/auth/login')
       .then(res => {
         setLogin(res.data.loggedin ? true : false);
       })
@@ -36,7 +36,7 @@ function Header(props) {
               <li className="nav-link">
                 <span className="nav-item"
                   onClick={async () => {
-                    axios.get('/auth/logout')
+                    axios.get('https://filofax.herokuapp.com/auth/logout')
                       .then(res => {
                         window.location.replace('/login')
                       })

@@ -29,13 +29,13 @@ function Notes(props) {
 
   useEffect(() => {
     (async () => {
-      await axios.get('/auth/login')
+      await axios.get('https://filofax.herokuapp.com/auth/login')
         .then(res => {
           if (!res.data.loggedin) {
             window.location.replace('/login');
           }
         })
-      await axios.get('/notes/notebook')
+      await axios.get('https://filofax.herokuapp.com/notes/notebook')
         .then(res => {
           if (res.data.notebookList.length > 0) {
             setNotebookList(res.data.notebookList);
@@ -94,7 +94,7 @@ function Notes(props) {
   const add_edit_Notebook = async () => {
     // for new Notebook
     if (!editNotebook) {
-      await axios.post('/notes/notebook', {
+      await axios.post('https://filofax.herokuapp.com/notes/notebook', {
         title: notebookTitle
       })
         .then(async res => {
@@ -142,7 +142,7 @@ function Notes(props) {
     } else {
       // edit Notebook title
       setCurrNotebookId(editNotebook.notebookid)
-      await axios.put('/notes/notebook', {
+      await axios.put('https://filofax.herokuapp.com/notes/notebook', {
         notebookid: editNotebook.notebookid,
         title: notebookTitle
       })
@@ -182,7 +182,7 @@ function Notes(props) {
   const deleteNotebook = async (_notebookid) => {
     // delete notebook
     setCurrNoteId(null);
-    await axios.delete('/notes/notebook', {
+    await axios.delete('https://filofax.herokuapp.com/notes/notebook', {
       data: { notebookid: _notebookid }
     })
       .then(res => {
@@ -220,7 +220,7 @@ function Notes(props) {
     }
     // create new note
     else if (!currNoteId && currNotebookId) {
-      await axios.post('/notes/note/notebookid', {
+      await axios.post('https://filofax.herokuapp.com/notes/note/notebookid', {
         notebookid: currNotebookId,
         notedata: {
           title: noteTitle,
@@ -249,7 +249,7 @@ function Notes(props) {
     }
     // edit note
     else if (currNoteId && currNotebookId) {
-      await axios.put('/notes/note/notebookid', {
+      await axios.put('https://filofax.herokuapp.com/notes/note/notebookid', {
         notebookid: currNotebookId,
         noteid: currNoteId,
         notedata: {
@@ -291,7 +291,7 @@ function Notes(props) {
   const deleteNote = async () => {
     // delete note
     setCurrNoteId(null);
-    await axios.delete('/notes/note/notebookid', {
+    await axios.delete('https://filofax.herokuapp.com/notes/note/notebookid', {
       data: { noteid: currNoteId }
     })
       .then(res => {
