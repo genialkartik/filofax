@@ -16,7 +16,7 @@ router.route('/notebook')
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
-      else res.json({ notebookList: [] });
+      else res.json({ notebookList: false });
     }
   })
   .post(async (req, res) => {
@@ -30,11 +30,11 @@ router.route('/notebook')
       });
       // save new Notebook
       const notebook_resp = await newNotebook.save();
-      res.json({ notebook_added: notebook_resp ? notebook_resp : {} });
+      res.json({ notebook_added: notebook_resp ? notebook_resp : false });
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
-      else res.json({ notebook_added: {} });
+      else res.json({ notebook_added: false });
     }
   })
   .put(async (req, res) => {
@@ -56,7 +56,8 @@ router.route('/notebook')
     try {
       if (!user) throw 'nosession';
       const delete_notebook = await Notebook.deleteOne({ notebookid: req.body.notebookid });
-      res.json({ deleted: delete_notebook ? true : false })
+      const delete_notes = await Note.deleteMany({ notebookid: req.body.notebookid });
+      res.json({ deleted: delete_notebook.n === 1 ? true : false })
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
@@ -78,7 +79,7 @@ router.route('/note/:notebookid')
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
-      else res.json({ notesList: [] });
+      else res.json({ notesList: false });
     }
   })
   .post(async (req, res) => {
@@ -89,9 +90,9 @@ router.route('/note/:notebookid')
         noteid: uuidv4(),
         user_email: req.session.userdata.email,
         notebookid: req.body.notebookid,
-        title: req.body.title,
-        subtitle: req.body.subtitle,
-        description: req.body.description
+        title: req.body.notedata.title,
+        subtitle: req.body.notedata.subtitle,
+        description: req.body.notedata.description
       });
       // add note
       const saved_note = await new_note.save();
@@ -99,7 +100,7 @@ router.route('/note/:notebookid')
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });
-      else res.json({ note_added: {} });
+      else res.json({ note_added: false });
     }
   })
   .put(async (req, res) => {
@@ -108,9 +109,9 @@ router.route('/note/:notebookid')
       if (!user) throw 'nosession';
       // edit note title
       const notebook_resp = await Note.updateOne({ noteid: req.body.noteid }, {
-        title: req.body.title,
-        subtitle: req.body.subtitle,
-        description: req.body.description
+        title: req.body.notedata.title,
+        subtitle: req.body.notedata.subtitle,
+        description: req.body.notedata.description
       });
       res.json({ updated: notebook_resp.nModified == 1 ? true : false });
     } catch (error) {
@@ -125,7 +126,7 @@ router.route('/note/:notebookid')
       if (!user) throw 'nosession';
       // delete note
       const delete_note = await Notebook.deleteOne({ noteid: req.body.noteid });
-      res.json({ deleted: delete_note ? true : false });
+      res.json({ deleted: delete_note.n ? true : false });
     } catch (error) {
       console.log(error);
       if (error == 'nosession') res.json({ loggedin: false });

@@ -1,6 +1,7 @@
 .App-header {
-  height: 64px;
-  background: aliceblue;
+  height: 55px;
+  background: #3F51B5;
+  color: #fff;
 }
 .restpage{
   min-height: calc(100vh - 64px);
@@ -18,11 +19,14 @@
   font-size: 28px;
 }
 .app-brand-link{
-  color: #111;
+  color: #fff;
   text-decoration: none;
 }
 .app-links {
   margin-left: auto;
+}
+.app-links ul li:hover {
+  background-color: rgb(10, 61, 156);
 }
 .nav-lists {
   padding: 0;
@@ -31,9 +35,10 @@
 }
 .nav-link {
   margin: 0 10px;
+  padding: 12px;
 }
 .nav-item{
-  color: #222;
+  color: #fff;
   text-decoration: none;
   cursor: pointer;
 }

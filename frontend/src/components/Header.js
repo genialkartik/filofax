@@ -16,9 +16,19 @@ function Header(props) {
   return (
     <header className="App-header">
       <div className="nav-container">
+          <img src="./notebook-icon.png" alt="PM" width="44px" height="44px" />
         <div className="app-brand">
-          <img src="./passmanager.png" alt="PM" width="40px" height="40px" />
-          <Link to="/" className="app-brand-link">Password Manager</Link>
+          <Link to="/" className="app-brand-link">My Notebook</Link>
+        </div>
+        <div className="app-links">
+          <ul className="nav-lists">
+            <li className="nav-link">
+              <Link to="/" className="nav-item">Credentials</Link>
+            </li>
+            <li className="nav-link">
+              <Link to="/note" className="nav-item">Notebook</Link>
+            </li>
+          </ul>
         </div>
         {login ?
           <div className="app-links">
