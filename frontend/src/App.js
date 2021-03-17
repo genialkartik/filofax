@@ -10,7 +10,7 @@ function App(props) {
   return (
     <div className="App">
       <Router>
-        <Route component={Login} exact path="/login" />
+        <Route component={Login} path="/login" />
         <Route component={SignUp} exact path="/register" />
         <Route component={Home} exact path="/" />
         <Route component={Uploader} exact path="/archieves" />
