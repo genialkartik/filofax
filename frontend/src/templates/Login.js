@@ -4,6 +4,7 @@ import {
   Paper, TextField, Button, makeStyles, Snackbar, CircularProgress
 } from '@material-ui/core';
 import Header from "../components/Header";
+import { auth, firebase } from '../firebase';
 
 const useStyles = makeStyles((theme) => ({
   loginRestPage: {
@@ -26,7 +27,7 @@ function Login(props) {
   const [msg, setMsg] = useState('')
 
   useEffect(() => {
-    axios.get('https://filofax.herokuapp.com/auth/login')
+    axios.get('https://filofax1.herokuapp.com/auth/login')
       .then(res => {
         if (res.data.loggedin) {
           setLoginClicked(false)
@@ -37,10 +38,33 @@ function Login(props) {
       })
   }, [props])
 
+  async function googleLogin() {
+    //1 - init Google Auth Provider
+    const provider = new firebase.auth.GoogleAuthProvider();
+    //2 - create the popup signIn
+    await auth.signInWithPopup(provider).then(
+      async (result) => {
+        //3 - pick the result and store the token
+        const token = await auth?.currentUser?.getIdToken(true);
+        //4 - check if have token in the current user
+        if (token) {
+          //5 - put the token at localStorage (We'll use this to make requests)
+          localStorage.setItem("@token", token);
+          //6 - navigate user to the book list
+          // history.push("/");
+          window.location.replace('/');
+        }
+      },
+      function (error) {
+        console.log(error);
+      }
+    );
+  }
+
   const signIn = (e) => {
     e.preventDefault();
     setLoginClicked(true);
-    axios.post('https://filofax.herokuapp.com/auth/login', { email, password })
+    axios.post('https://filofax1.herokuapp.com/auth/login', { email, password })
       .then(res => {
         setLoginClicked(false)
         setSnackOpen(true)
@@ -85,6 +109,9 @@ function Login(props) {
               }
             </Button>
           </form>
+          <button onClick={googleLogin} className="login-button">
+            GOOGLE
+      </button>
         </Paper>
       </div>
       {/* snack bar */}

@@ -3,7 +3,7 @@ const app = express();
 const session = require('express-session');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const path = require('path');
+const authMiddleware = require('./auth-middleware');
 
 // set PORT
 app.set('port', process.env.PORT || 4000);
@@ -32,13 +32,9 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day 
-}));
+}))
 
-// access build files
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
+app.use('/', authMiddleware);
 app.use('/auth', require('./route/auth'))
 app.use('/pass', require('./route/passwordContainer'))
 app.use('/notes', require('./route/notebook'))
