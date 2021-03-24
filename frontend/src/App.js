@@ -10,9 +10,9 @@ function App(props) {
   return (
     <div className="App">
       <Router>
+        <Route component={Home} exact path="/" />
         <Route component={Login} path="/login" />
         <Route component={SignUp} exact path="/register" />
-        <Route component={Home} exact path="/" />
         <Route component={Uploader} exact path="/archieves" />
         <Route component={Notes} exact path="/note" />
       </Router>
