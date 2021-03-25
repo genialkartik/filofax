@@ -51,7 +51,7 @@ function Home(props) {
   const [currPass, setCurrPass] = useState(null);
 
   const isLogedIn = useCallback(async () => {
-    await axios.get("/auth/login").then((res) => {
+    await axios.get("https://filofax1.herokuapp.com/auth/login").then((res) => {
       if (!res.data.loggedin) {
         window.location.replace("/login");
       }
@@ -64,7 +64,7 @@ function Home(props) {
 
   useEffect(() => {
     axios
-      .get("/pass/list", {
+      .get("https://filofax1.herokuapp.com/pass/list", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("@token"),
         },
@@ -90,7 +90,7 @@ function Home(props) {
   const handleAddNewPassContatiner = async (e) => {
     e.preventDefault();
     await axios
-      .post("/pass/add", {
+      .post("https://filofax1.herokuapp.com/pass/add", {
         formInput,
       })
       .then((res) => {
@@ -129,7 +129,7 @@ function Home(props) {
 
   const handleShowPass = async () => {
     await axios
-      .post("/pass/list", { pin })
+      .post("https://filofax1.herokuapp.com/pass/list", { pin })
       .then((res) => {
         if (res.data.valid_pin) {
           setShowPassword(true);
@@ -147,7 +147,7 @@ function Home(props) {
     setCurrPass(pass);
     // check for Pin Session
     await axios
-      .get("/pass/pin")
+      .get("https://filofax1.herokuapp.com/pass/pin")
       .then((res) => {
         if (res.data.is_session) {
           navigator.clipboard.writeText(pass);
@@ -166,7 +166,7 @@ function Home(props) {
   // handle PinSession
   const handlePinSession = async () => {
     await axios
-      .post("/pass/pin", { pin })
+      .post("https://filofax1.herokuapp.com/pass/pin", { pin })
       .then((res) => {
         if (res.data.is_session) {
           navigator.clipboard.writeText(currPass);

@@ -31,7 +31,7 @@ function Login({ history }) {
   const [msg, setMsg] = useState("");
 
   const isLogedIn = useCallback(async () => {
-    await axios.get("/auth/login").then((res) => {
+    await axios.get("https://filofax1.herokuapp.com/auth/login").then((res) => {
       if (res.data.loggedin) {
         setLoginClicked(false);
         setSnackOpen(true);
@@ -49,7 +49,7 @@ function Login({ history }) {
     e.preventDefault();
     setLoginClicked(true);
     axios
-      .post("/auth/login", { email, password })
+      .post("https://filofax1.herokuapp.com/auth/login", { email, password })
       .then((res) => {
         setLoginClicked(false);
         setSnackOpen(true);
