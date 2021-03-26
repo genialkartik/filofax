@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Button, TextField, makeStyles, Modal } from "@material-ui/core";
 import {
   Visibility as VisibilityIcon,
@@ -50,21 +50,16 @@ function Home(props) {
   const [isPassCopyModal, setPassCopyModal] = useState(false);
   const [currPass, setCurrPass] = useState(null);
 
-  const isLogedIn = useCallback(async () => {
-    await axios.get("https://filofax1.herokuapp.com/auth/login").then((res) => {
-      if (!res.data.loggedin) {
-        window.location.replace("/login");
-      }
-    });
-  }, []);
-
   useEffect(() => {
-    isLogedIn();
-  }, [isLogedIn]);
+    axios.get("/auth/login")
+      .then((res) => {
+        if (!res.data.loggedin) {
+          window.location.replace("/login");
+        }
+      });
 
-  useEffect(() => {
     axios
-      .get("https://filofax1.herokuapp.com/pass/list", {
+      .get("/pass/list", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("@token"),
         },
@@ -90,7 +85,7 @@ function Home(props) {
   const handleAddNewPassContatiner = async (e) => {
     e.preventDefault();
     await axios
-      .post("https://filofax1.herokuapp.com/pass/add", {
+      .post("/pass/add", {
         formInput,
       })
       .then((res) => {
@@ -129,7 +124,7 @@ function Home(props) {
 
   const handleShowPass = async () => {
     await axios
-      .post("https://filofax1.herokuapp.com/pass/list", { pin })
+      .post("/pass/list", { pin })
       .then((res) => {
         if (res.data.valid_pin) {
           setShowPassword(true);
@@ -147,7 +142,7 @@ function Home(props) {
     setCurrPass(pass);
     // check for Pin Session
     await axios
-      .get("https://filofax1.herokuapp.com/pass/pin")
+      .get("/pass/pin")
       .then((res) => {
         if (res.data.is_session) {
           navigator.clipboard.writeText(pass);
@@ -166,7 +161,7 @@ function Home(props) {
   // handle PinSession
   const handlePinSession = async () => {
     await axios
-      .post("https://filofax1.herokuapp.com/pass/pin", { pin })
+      .post("/pass/pin", { pin })
       .then((res) => {
         if (res.data.is_session) {
           navigator.clipboard.writeText(currPass);

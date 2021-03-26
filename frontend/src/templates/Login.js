@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Paper,
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Login({ history }) {
+function Login(props) {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,26 +30,24 @@ function Login({ history }) {
   const [snackOpen, setSnackOpen] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const isLogedIn = useCallback(async () => {
-    await axios.get("https://filofax1.herokuapp.com/auth/login").then((res) => {
+  useEffect(() => {
+    axios.get("/auth/login").then((res) => {
+      console.log(res.data)
       if (res.data.loggedin) {
         setLoginClicked(false);
         setSnackOpen(true);
         setMsg("Already Logged In");
-        history.push("/");
+        // props.history.push("/");
+        window.location.replace('/')
       }
     });
-  }, [history]);
-
-  useEffect(() => {
-    isLogedIn();
-  }, [isLogedIn]);
+  }, [props]);
 
   const signIn = (e) => {
     e.preventDefault();
     setLoginClicked(true);
     axios
-      .post("https://filofax1.herokuapp.com/auth/login", { email, password })
+      .post("/auth/login", { email, password })
       .then((res) => {
         setLoginClicked(false);
         setSnackOpen(true);

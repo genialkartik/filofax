@@ -31,13 +31,13 @@ function Notes(props) {
 
   useEffect(() => {
     (async () => {
-      await axios.get("https://filofax1.herokuapp.com/auth/login").then((res) => {
+      await axios.get("/auth/login").then((res) => {
         if (!res.data.loggedin) {
           window.location.replace("/login");
         }
       });
       await axios
-        .get("https://filofax1.herokuapp.com/notes/notebook")
+        .get("/notes/notebook")
         .then((res) => {
           if (res.data.notebookList.length > 0) {
             setNotebookList(res.data.notebookList);
@@ -71,7 +71,7 @@ function Notes(props) {
     setCurrNoteId(null);
     setCurrNotebookId(notebookid);
     await axios
-      .get(`https://filofax1.herokuapp.com/notes/note/${notebookid}`)
+      .get(`/notes/note/${notebookid}`)
       .then((res) => {
         if (res.data.notesList.length > 0) {
           setNotesList(res.data.notesList ? res.data.notesList : []);
@@ -98,7 +98,7 @@ function Notes(props) {
     // for new Notebook
     if (!editNotebook) {
       await axios
-        .post("https://filofax1.herokuapp.com/notes/notebook", {
+        .post("/notes/notebook", {
           title: notebookTitle,
         })
         .then(async (res) => {
@@ -111,7 +111,7 @@ function Notes(props) {
             ]);
             setCurrNotebookId(res.data.notebook_added.notebookid);
             await axios
-              .get(`https://filofax1.herokuapp.com/notes/note/${res.data.notebook_added.notebookid}`)
+              .get(`/notes/note/${res.data.notebook_added.notebookid}`)
               .then((res) => {
                 if (res.data.notesList.length > 0) {
                   setNotesList(res.data.notesList ? res.data.notesList : []);
@@ -151,7 +151,7 @@ function Notes(props) {
       // edit Notebook title
       setCurrNotebookId(editNotebook.notebookid);
       await axios
-        .put("https://filofax1.herokuapp.com/notes/notebook", {
+        .put("/notes/notebook", {
           notebookid: editNotebook.notebookid,
           title: notebookTitle,
         })
@@ -192,7 +192,7 @@ function Notes(props) {
     // delete notebook
     setCurrNoteId(null);
     await axios
-      .delet("https://filofax1.herokuapp.com/notes/notebook", {
+      .delet("/notes/notebook", {
         data: { notebookid: _notebookid },
       })
       .then((res) => {
@@ -235,7 +235,7 @@ function Notes(props) {
     // create new note
     else if (!currNoteId && currNotebookId) {
       await axios
-        .post("https://filofax1.herokuapp.com/notes/note/notebookid", {
+        .post("/notes/note/notebookid", {
           notebookid: currNotebookId,
           notedata: {
             title: noteTitle,
@@ -265,7 +265,7 @@ function Notes(props) {
     // edit note
     else if (currNoteId && currNotebookId) {
       await axios
-        .put("https://filofax1.herokuapp.com/notes/note/notebookid", {
+        .put("/notes/note/notebookid", {
           notebookid: currNotebookId,
           noteid: currNoteId,
           notedata: {
@@ -279,7 +279,7 @@ function Notes(props) {
             setCurrNoteId(currNoteId);
             setCurrNotebookId(currNotebookId);
             await axios
-              .get(`https://filofax1.herokuapp.com/notes/note/${currNotebookId}`)
+              .get(`/notes/note/${currNotebookId}`)
               .then((res) => {
                 setNotesList(res.data.notesList);
               })
@@ -309,7 +309,7 @@ function Notes(props) {
     // delete note
     setCurrNoteId(null);
     await axios
-      .delet("https://filofax1.herokuapp.com/notes/note/notebookid", {
+      .delet("/notes/note/notebookid", {
         data: { noteid: currNoteId },
       })
       .then((res) => {

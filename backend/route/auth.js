@@ -7,6 +7,7 @@ const User = require("../model/User");
 router
   .route("/login")
   .get(async (req, res) => {
+    console.log(req.session.userdata)
     res.json({ loggedin: req.session.userdata ? true : false });
   })
   .post(async (req, res) => {
@@ -15,6 +16,7 @@ router
         req.body.email,
         req.body.password
       );
+      console.log(cred)
       if (!cred) throw "Invalid Credentials";
       else {
         req.session.userdata = {

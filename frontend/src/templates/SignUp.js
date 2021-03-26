@@ -34,7 +34,7 @@ function SignUp(props) {
   const [loginClicked, setLoginClicked] = useState(false);
 
   const isLogedIn = useCallback(async () => {
-    await axios.get("https://filofax1.herokuapp.com/auth/login").then((res) => {
+    await axios.get("/auth/login").then((res) => {
       if (res.data.loggedin) {
         setLoginClicked(false);
         setSnackOpen(true);
@@ -52,7 +52,7 @@ function SignUp(props) {
     e.preventDefault();
     setLoginClicked(true);
     await axios
-      .post("https://filofax1.herokuapp.com/auth/signup", {
+      .post("/auth/signup", {
         fullname,
         email,
         password,
