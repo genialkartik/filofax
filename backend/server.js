@@ -3,6 +3,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const app = express();
 const cors = require("cors");
+const path = require("path");
 const mongoose = require("mongoose");
 
 // set PORT
@@ -45,9 +46,11 @@ app.use("/auth", require("./route/auth"));
 app.use("/pass", require("./route/passwordContainer"));
 app.use("/notes", require("./route/notebook"));
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-// });
+app.use(express.static("build"));
+app.get('/*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+});
+
 
 app.listen(app.get("port"), () => {
   console.log(`Listening on PORT: ${app.get("port")}`);

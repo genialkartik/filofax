@@ -31,27 +31,36 @@ function Login(props) {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    axios.get("/auth/login").then((res) => {
-      console.log(res.data)
-      if (res.data.loggedin) {
-        setLoginClicked(false);
-        setSnackOpen(true);
-        setMsg("Already Logged In");
-        // props.history.push("/");
-        window.location.replace('/')
-      }
-    });
+    fetch("/auth/login", {
+      method: "GET",
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data)
+        if (data.loggedin) {
+          setLoginClicked(false);
+          setSnackOpen(true);
+          setMsg("Already Logged In");
+          // props.history.push("/");
+          window.location.replace('/')
+        }
+      });
   }, [props]);
 
   const signIn = (e) => {
     e.preventDefault();
     setLoginClicked(true);
-    axios
-      .post("/auth/login", { email, password })
-      .then((res) => {
+    fetch("/auth/login", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+      .then(response => response.json())
+      .then((data) => {
         setLoginClicked(false);
         setSnackOpen(true);
-        if (res.data.loggedin) {
+        if (data.loggedin) {
           setMsg("Logged in Successfully");
           setTimeout(() => {
             window.location.replace("/");

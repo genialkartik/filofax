@@ -16,7 +16,6 @@ router
         req.body.email,
         req.body.password
       );
-      console.log(cred)
       if (!cred) throw "Invalid Credentials";
       else {
         req.session.userdata = {

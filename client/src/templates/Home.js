@@ -51,22 +51,26 @@ function Home(props) {
   const [currPass, setCurrPass] = useState(null);
 
   useEffect(() => {
-    axios.get("/auth/login")
-      .then((res) => {
-        if (!res.data.loggedin) {
+    fetch("/auth/login", {
+      method: "GET",
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data)
+        if (!data.loggedin) {
           window.location.replace("/login");
         }
       });
 
-    axios
-      .get("/pass/list", {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("@token"),
-        },
-      })
-      .then((res) => {
-        setPassList(res.data ? res.data : []);
-        setFilteredList(res.data ? res.data : []);
+    fetch("/pass/list", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(response => response.json())
+      .then((data) => {
+        setPassList(data ? data : []);
+        setFilteredList(data ? data : []);
       })
       .catch((error) => {
         console.log(error);
