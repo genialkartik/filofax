@@ -1,22 +1,37 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import "./App.css";
 import Home from "./templates/Home";
-import Login from "./templates/Login";
-import SignUp from "./templates/SignUp";
-import Uploader from "./templates/Uploader";
-import Notes from "./templates/Notes";
+import Login from "./templates/auth/Login";
+import SignUp from "./templates/auth/SignUp";
+import Bucket from "./templates/bucket/Bucket";
+import Creds from "./templates/credentials/Creds";
+import Docs from "./templates/docs/Docs";
+import Notes from "./templates/notebook/Notes";
+import Header from "./components/Header";
+
+const Theme = createMuiTheme({
+  palette: {
+    type: "dark",
+  },
+});
 
 function App(props) {
   return (
-    <div className="App">
-      <Router>
-        <Route component={Home} exact path="/" />
-        <Route component={Login} path="/login" />
-        <Route component={SignUp} exact path="/register" />
-        <Route component={Uploader} exact path="/archieves" />
-        <Route component={Notes} exact path="/note" />
-      </Router>
-    </div>
+    <MuiThemeProvider theme={Theme}>
+      <div className="App">
+        <Router>
+          <Header />
+          <Route component={Home} exact path="/" />
+          <Route component={Login} path="/login" />
+          <Route component={SignUp} exact path="/signup" />
+          <Route component={Bucket} exact path="/bucket" />
+          <Route component={Docs} exact path="/docs" />
+          <Route component={Notes} exact path="/notes" />
+          <Route component={Creds} exact path="/credentials" />
+        </Router>
+      </div>
+    </MuiThemeProvider>
   );
 }
 

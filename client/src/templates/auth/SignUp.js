@@ -9,7 +9,6 @@ import {
   Snackbar,
   CircularProgress,
 } from "@material-ui/core";
-import Header from "../components/Header";
 
 const useStyles = makeStyles((theme) => ({
   signRestPage: {
@@ -84,7 +83,6 @@ function SignUp(props) {
         <Redirect to="/" />
       ) : (
         <>
-          <Header />
           <div className={`SignUp restpage ${classes.signRestPage}`}>
             <Paper
               style={{

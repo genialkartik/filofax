@@ -1,9 +1,9 @@
 .App-header {
   height: 55px;
-  background: #3F51B5;
+  background: #3f51b5;
   color: #fff;
 }
-.restpage{
+.restpage {
   min-height: calc(100vh - 64px);
   position: relative;
 }
@@ -18,12 +18,9 @@
 .app-brand {
   font-size: 28px;
 }
-.app-brand-link{
+.app-brand-link {
   color: #fff;
   text-decoration: none;
-}
-.app-links {
-  margin-left: auto;
 }
 .app-links ul li:hover {
   background-color: rgb(10, 61, 156);
@@ -37,7 +34,7 @@
   margin: 0 10px;
   padding: 12px;
 }
-.nav-item{
+.nav-item {
   color: #fff;
   text-decoration: none;
   cursor: pointer;
@@ -50,7 +47,7 @@
   max-width: 90%;
   margin: 0 auto;
 }
-.searchbar{
+.searchbar {
   display: flex;
   width: 100%;
 }
@@ -62,7 +59,6 @@
 .result_box {
   padding: 1rem;
   border-bottom: 1px solid #555;
-  background: #eee;
   width: 50%;
   float: left;
 }

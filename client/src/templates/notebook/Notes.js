@@ -10,7 +10,6 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@material-ui/icons";
-import Header from "../components/Header";
 
 function Notes(props) {
   const classes = useStyles();
@@ -337,7 +336,6 @@ function Notes(props) {
 
   return (
     <div className={classes.main_body}>
-      <Header />
       <div className={classes.notes_body}>
         <div className={classes.notes_label_area}>
           <div className={classes.newNotesContainer}>

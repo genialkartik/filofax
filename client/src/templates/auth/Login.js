@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Paper,
   TextField,
@@ -8,7 +7,6 @@ import {
   Snackbar,
   CircularProgress,
 } from "@material-ui/core";
-import Header from "../components/Header";
 
 const useStyles = makeStyles((theme) => ({
   loginRestPage: {
@@ -33,17 +31,17 @@ function Login(props) {
   useEffect(() => {
     fetch("/auth/login", {
       method: "GET",
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     })
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        console.log(data);
         if (data.loggedin) {
           setLoginClicked(false);
           setSnackOpen(true);
           setMsg("Already Logged In");
           // props.history.push("/");
-          window.location.replace('/')
+          window.location.replace("/");
         }
       });
   }, [props]);
@@ -52,11 +50,11 @@ function Login(props) {
     e.preventDefault();
     setLoginClicked(true);
     fetch("/auth/login", {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     })
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((data) => {
         setLoginClicked(false);
         setSnackOpen(true);
@@ -77,7 +75,6 @@ function Login(props) {
 
   return (
     <>
-      <Header />
       <div className={`Login restpage ${classes.loginRestPage}`}>
         <Paper
           style={{

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { makeStyles, TextField, Button, Modal } from "@material-ui/core";
 import { FileCopy } from "@material-ui/icons";
-import logo from "../logo.svg";
 
 const useStyles = makeStyles((theme) => ({
   passLi: {
@@ -62,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Uploader() {
+export default function Bucket() {
   const classes = useStyles();
 
   const [isAddActive, setAddActive] = useState(false);
