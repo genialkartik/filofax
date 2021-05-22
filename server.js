@@ -7,18 +7,21 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 // set PORT
-app.set("port", process.env.PORT || 4000);
+app.set("port", process.env.APP_PORT || 4000);
 app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   next();
 });
 
 mongoose
-  .connect(process.env.MONGO_CONNECTION_URL, {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -46,11 +49,12 @@ app.use("/auth", require("./route/auth"));
 app.use("/pass", require("./route/passwordContainer"));
 app.use("/notes", require("./route/notebook"));
 
-app.use(express.static("build"));
-app.get('/*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-});
-
+if (process.env.NODE_ENV == "Production") {
+  app.use(express.static("client/build"));
+  app.get("/*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 app.listen(app.get("port"), () => {
   console.log(`Listening on PORT: ${app.get("port")}`);
