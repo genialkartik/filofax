@@ -7,7 +7,10 @@ const User = require("../model/User");
 router
   .route("/login")
   .get(async (req, res) => {
-    res.json({ loggedin: req.session.userdata ? true : false });
+    res.json({
+      loggedin: req.session.userdata ? true : false,
+      userdata: req.session.userdata ? req.session.userdata : null,
+    });
   })
   .post(async (req, res) => {
     try {

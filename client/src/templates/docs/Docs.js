@@ -1,19 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Collapse from "@material-ui/core/Collapse";
-import Typography from "@material-ui/core/Typography";
-import Tooltip from "@material-ui/core/Tooltip";
-import Fab from "@material-ui/core/Fab";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import IconButton from "@material-ui/core/IconButton";
-import Dialog from "@material-ui/core/Dialog";
+import {
+  CircularProgress,
+  CardContent,
+  Tooltip,
+  Fab,
+  Dialog,
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import AddDocDialog from "./addCred";
+import DocContainer from "./docsList";
 import "./docs.css";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   docCont: {
@@ -23,19 +22,44 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     margin: "10px",
   },
-  root: {
-    width: "90%",
-  },
-  fab: {},
   expand: {
-    width: "90%",
+    width: "80%",
   },
 }));
 
-export default function Docs() {
+export default function Docs(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = useState(false);
+  const [email, setEmail] = useState("");
   const [openAddDocDialog, setAddDocDialogOpen] = useState(false);
+  const [docsList, setDocsList] = useState([]);
+  const [filteredDocsList, setFilteredDocsList] = useState([]);
+  const [loading, setLoading] = useState("");
+  const history = useHistory();
+
+  useEffect(() => {
+    (async () => {
+      const loginResp = await axios.get("/auth/login");
+      if (loginResp.data && !loginResp.data.loggedin) {
+        history.replace("/login");
+      } else {
+        setEmail(loginResp.data.userdata.email);
+      }
+
+      setLoading("loadData");
+      const resp = await axios.get("/docs/list");
+      setDocsList(resp.data ? resp.data : []);
+      setFilteredDocsList(resp.data ? resp.data : []);
+      setLoading("");
+    })();
+  }, [props, history]);
+
+  // handle search
+  const handleSearchResult = (text) => {
+    const resultList = docsList.filter(
+      (doc) => doc.hashtags.toLowerCase().indexOf(text) > -1
+    );
+    setFilteredDocsList(resultList);
+  };
 
   const handleAddDocClickOpen = () => {
     setAddDocDialogOpen(true);
@@ -44,29 +68,34 @@ export default function Docs() {
     setAddDocDialogOpen(false);
   };
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
+  const dataExchangeFn = (data) => {
+    setFilteredDocsList((docs) => [...docs, data]);
+    setAddDocDialogOpen(false);
+  };
+
+  const exchangeDocIdFn = (docid) => {
+    const filterList = filteredDocsList.filter((doc) => doc.docid !== docid);
+    setFilteredDocsList(filterList);
   };
 
   return (
     <div>
       <div className={classes.docCont}>
-        <form onSubmit={handleExpandClick}>
-          <input
-            id="standard-search"
-            placeholder="Search"
-            label="Search field"
-            type="search"
-            style={{
-              borderColor: "#183D5Ddd",
-              borderRadius: "19px",
-              margin: "10px",
-              paddingBlock: "10px",
-              paddingInline: "50px",
-              color: "#183D5D",
-            }}
-          ></input>
-        </form>
+        <input
+          id="standard-search"
+          placeholder="Search"
+          label="Search field"
+          type="search"
+          style={{
+            borderColor: "#183D5Ddd",
+            borderRadius: "19px",
+            margin: "10px",
+            paddingBlock: "10px",
+            paddingInline: "50px",
+            color: "#183D5D",
+          }}
+          onChange={(e) => handleSearchResult(e.target.value)}
+        />
         <Tooltip title="Add Doc" aria-label="add">
           <Fab
             color="primary"
@@ -77,65 +106,30 @@ export default function Docs() {
           </Fab>
         </Tooltip>
       </div>
-      <ul>
-        <li className={classes.docCont}>
-          <Card
-            className={classes.root}
-            style={{ backgroundColor: "transparent" }}
-            className={clsx(classes.expand, {
-              [classes.expandOpen]: expanded,
-            })}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
+      {filteredDocsList && filteredDocsList.length > 0 ? (
+        filteredDocsList.map((doc) => (
+          <DocContainer doc={doc} email={email} returnDocId={exchangeDocIdFn} />
+        ))
+      ) : (
+        <CardContent>
+          <h1
+            style={{
+              background: "#0066CC",
+              cursor: "auto",
+              borderRadius: "15px",
+              display: "flex",
+              justifyContent: "center",
+              color: "#fff",
+            }}
           >
-            <CardHeader
-              action={
-                <IconButton aria-label="settings">
-                  <ExpandMoreIcon />
-                </IconButton>
-              }
-              style={{ backgroundColor: "#0066cc" }}
-              title="import CardHeader from '@material-ui/core/CardHeader';"
-              subheader={
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  component="p"
-                  style={{
-                    backgroundColor: "#183d5d",
-                    width: "min-content",
-                    paddingInline: "6px",
-                    borderRadius: "6px",
-                  }}
-                >
-                  #hastag
-                </Typography>
-              }
-            />
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <CardContent
-                style={{
-                  background: "#0066CCaa",
-                  cursor: "auto",
-                  borderRadius: "15px",
-                }}
-              >
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  component="p"
-                  style={{
-                    borderRadius: "6px",
-                  }}
-                >
-                  Heat 1/2 cup of the broth in a pot until simmering, add
-                  saffron and set aside for 10 minutes.
-                </Typography>
-              </CardContent>
-            </Collapse>
-          </Card>
-        </li>
-      </ul>
+            {loading === "loadData" ? (
+              <CircularProgress color="#fff" />
+            ) : (
+              "No doc found"
+            )}
+          </h1>
+        </CardContent>
+      )}
       <Dialog
         open={openAddDocDialog}
         maxWidth={"lg"}
@@ -143,7 +137,7 @@ export default function Docs() {
         onClose={handleAddDocClose}
         aria-labelledby="form-dialog-title"
       >
-        <AddDocDialog />
+        <AddDocDialog dataExchange={dataExchangeFn} />
       </Dialog>
     </div>
   );

@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
-import { Button, TextField, makeStyles, Modal } from "@material-ui/core";
+import {
+  Button,
+  TextField,
+  makeStyles,
+  Modal,
+  Tooltip,
+  Fab,
+  CircularProgress,
+} from "@material-ui/core";
 import {
   Visibility as VisibilityIcon,
   FileCopyOutlined as FileCopyOutlinedIcon,
+  Add as AddIcon,
   FileCopy as FileCopyIcon,
 } from "@material-ui/icons";
 import axios from "axios";
@@ -12,6 +21,13 @@ const useStyles = makeStyles((theme) => ({
   input: {
     marginBottom: theme.spacing(1),
     width: "90%",
+  },
+  docCont: {
+    display: "flex",
+    justifyContent: "center",
+    background: "transparent",
+    cursor: "pointer",
+    margin: "10px",
   },
   modalPaper: {
     position: "absolute",
@@ -48,6 +64,7 @@ function Creds(props) {
   const [passwordToShow, setPasswordToShow] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPassCopyModal, setPassCopyModal] = useState(false);
+  const [loading, setLoading] = useState("");
   const [currPass, setCurrPass] = useState(null);
 
   const history = useHistory();
@@ -58,10 +75,11 @@ function Creds(props) {
       if (loginResp.data && !loginResp.data.loggedin) {
         history.replace("/login");
       }
-
+      setLoading("passwordList");
       const passwordList = await axios.get("/pass/list");
       setPassList(passwordList.data ? passwordList.data : []);
       setFilteredList(passwordList.data ? passwordList.data : []);
+      setLoading("");
     })();
   }, [props]);
 
@@ -148,30 +166,35 @@ function Creds(props) {
   return (
     <>
       <div className="Home restpage">
-        <div className="search-container">
-          <div className="searchbar">
-            <TextField
-              variant="outlined"
-              type="text"
-              placeholder="Search platform..."
-              size="small"
-              onChange={(e) => handleSearchResult(e.target.value)}
-            />
-            <Button
-              style={{ marginLeft: "auto" }}
-              variant="contained"
+        <div className={classes.docCont}>
+          <input
+            id="standard-search"
+            placeholder="Search"
+            label="Search field"
+            type="search"
+            style={{
+              borderColor: "#183D5Ddd",
+              borderRadius: "19px",
+              margin: "10px",
+              paddingBlock: "10px",
+              paddingInline: "50px",
+              color: "#183D5D",
+            }}
+            onChange={(e) => handleSearchResult(e.target.value)}
+          />
+          <Tooltip title="Add Doc" aria-label="add">
+            <Fab
               color="primary"
-              size="medium"
+              className={classes.fab}
               onClick={() => {
                 setAddActive(true);
                 setFormInput({});
               }}
             >
-              Add New
-            </Button>
-          </div>
+              <AddIcon />
+            </Fab>
+          </Tooltip>
         </div>
-
         <Modal open={isAddActive} onClose={() => setAddActive(false)}>
           <div className={`add-new-container ${classes.modalPaper}`}>
             <div className="add-new">
@@ -334,7 +357,13 @@ function Creds(props) {
               ) : (
                 <div className="result_box">
                   <div className="detail-item">
-                    <span>No password list found</span>
+                    <span>
+                      {loading === "passwordList" ? (
+                        <CircularProgress size={25} color="#fff" />
+                      ) : (
+                        "No password list found"
+                      )}
+                    </span>
                   </div>
                 </div>
               )}

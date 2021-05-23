@@ -48,6 +48,7 @@ app.use(
 app.use("/auth", require("./route/auth"));
 app.use("/pass", require("./route/creds"));
 app.use("/notes", require("./route/notebook"));
+app.use("/docs", require("./route/docs"));
 
 if (process.env.NODE_ENV == "Production") {
   app.use(express.static("client/build"));
