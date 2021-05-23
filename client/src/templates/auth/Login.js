@@ -106,7 +106,7 @@ function Login(props) {
             <Button
               style={{ marginBottom: "2rem" }}
               type="submit"
-              variant="outlined"
+              variant="contained"
               color="primary"
             >
               {loginClicked ? (

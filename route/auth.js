@@ -7,7 +7,6 @@ const User = require("../model/User");
 router
   .route("/login")
   .get(async (req, res) => {
-    console.log(req.session.userdata)
     res.json({ loggedin: req.session.userdata ? true : false });
   })
   .post(async (req, res) => {
@@ -34,7 +33,6 @@ router
 
 router.route("/signup").post(async (req, res) => {
   try {
-    console.log(req.body);
     const userId = uuidv4();
     var newUser = new User({
       userid: userId,

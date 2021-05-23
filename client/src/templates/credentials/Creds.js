@@ -6,6 +6,7 @@ import {
   FileCopy as FileCopyIcon,
 } from "@material-ui/icons";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -49,32 +50,19 @@ function Creds(props) {
   const [isPassCopyModal, setPassCopyModal] = useState(false);
   const [currPass, setCurrPass] = useState(null);
 
-  useEffect(() => {
-    fetch("/auth/login", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (!data.loggedin) {
-          window.location.replace("/login");
-        }
-      });
+  const history = useHistory();
 
-    fetch("/pass/list", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setPassList(data ? data : []);
-        setFilteredList(data ? data : []);
-      })
-      .catch((error) => {
-        console.log(error);
-        setPassList([]);
-      });
+  useEffect(() => {
+    (async () => {
+      const loginResp = await axios.get("/auth/login");
+      if (loginResp.data && !loginResp.data.loggedin) {
+        history.replace("/login");
+      }
+
+      const passwordList = await axios.get("/pass/list");
+      setPassList(passwordList.data ? passwordList.data : []);
+      setFilteredList(passwordList.data ? passwordList.data : []);
+    })();
   }, [props]);
 
   const handleInputChange = (e) => {
@@ -87,27 +75,20 @@ function Creds(props) {
 
   const handleAddNewPassContatiner = async (e) => {
     e.preventDefault();
-    await axios
-      .post("/pass/add", {
-        formInput,
-      })
-      .then((res) => {
-        if (res.data.pass_container_added) {
-          setPassList((prev_passList) => [
-            ...prev_passList,
-            res.data.containerData,
-          ]);
-          setFilteredList((prev_filteredList) => [
-            ...prev_filteredList,
-            res.data.containerData,
-          ]);
-        }
-        setAddActive(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setAddActive(false);
-      });
+    const res = await axios.post("/pass/add", {
+      formInput,
+    });
+    if (res.data.pass_container_added) {
+      setPassList((prev_passList) => [
+        ...prev_passList,
+        res.data.containerData,
+      ]);
+      setFilteredList((prev_filteredList) => [
+        ...prev_filteredList,
+        res.data.containerData,
+      ]);
+    }
+    setAddActive(false);
   };
 
   const showPasswordModal = async (password) => {
@@ -126,59 +107,34 @@ function Creds(props) {
   };
 
   const handleShowPass = async () => {
-    await axios
-      .post("/pass/list", { pin })
-      .then((res) => {
-        if (res.data.valid_pin) {
-          setShowPassword(true);
-        } else {
-          setShowPassword(false);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setShowPassword(false);
-      });
+    const res = await axios.post("/pass/list", { pin });
+    setShowPassword(res.data && res.data.valid_pin);
   };
 
   const checkPinSession = async (pass, id) => {
     setCurrPass(pass);
     // check for Pin Session
-    await axios
-      .get("/pass/pin")
-      .then((res) => {
-        if (res.data.is_session) {
-          navigator.clipboard.writeText(pass);
-          setPassCopyModal(false);
-          setPassCopiedOf(id);
-        } else {
-          setPassCopyModal(true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setPassCopyModal(true);
-      });
+    const res = await axios.get("/pass/pin");
+    if (res.data && res.data.is_session) {
+      navigator.clipboard.writeText(pass);
+      setPassCopyModal(false);
+      setPassCopiedOf(id);
+    } else {
+      setPassCopyModal(true);
+    }
   };
 
   // handle PinSession
   const handlePinSession = async () => {
-    await axios
-      .post("/pass/pin", { pin })
-      .then((res) => {
-        if (res.data.is_session) {
-          navigator.clipboard.writeText(currPass);
-          setPassCopyModal(false);
-          setCurrPass(null);
-        } else {
-          setPassCopyModal(true);
-          setCurrPass(null);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setCurrPass(null);
-      });
+    const res = await axios.post("/pass/pin", { pin });
+    if (res.data && res.data.is_session) {
+      navigator.clipboard.writeText(currPass);
+      setPassCopyModal(false);
+      setCurrPass(null);
+    } else {
+      setPassCopyModal(true);
+      setCurrPass(null);
+    }
   };
 
   // handle search
@@ -333,6 +289,7 @@ function Creds(props) {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
+                            cursor: "pointer",
                           }}
                           type="button"
                           onClick={() =>
@@ -351,6 +308,7 @@ function Creds(props) {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
+                            cursor: "pointer",
                           }}
                           type="button"
                           onClick={() => showPasswordModal(pass.password)}
@@ -384,7 +342,7 @@ function Creds(props) {
 
             <Modal open={isPassCopyModal} onClose={closePassCopyModal}>
               <div className={classes.modalPaper}>
-                <h3>Secure Verification</h3>
+                <h3>Enter Pin to show Password</h3>
                 <TextField
                   onChange={(e) => setPin(e.target.value)}
                   type="password"
@@ -406,7 +364,7 @@ function Creds(props) {
 
             <Modal open={openPinModal} onClose={pinModalClose}>
               <div className={classes.modalPaper}>
-                <h3>Secure Verification</h3>
+                <h3>Secured Verification</h3>
                 <TextField
                   onChange={(e) => setPin(e.target.value)}
                   type="password"

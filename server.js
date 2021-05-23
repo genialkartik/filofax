@@ -46,7 +46,7 @@ app.use(
 );
 
 app.use("/auth", require("./route/auth"));
-app.use("/pass", require("./route/passwordContainer"));
+app.use("/pass", require("./route/creds"));
 app.use("/notes", require("./route/notebook"));
 
 if (process.env.NODE_ENV == "Production") {
