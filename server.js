@@ -7,7 +7,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 // set PORT
-app.set("port", process.env.APP_PORT || 8080);
+app.set("port", process.env.PORT || 8080);
 app.use(cors());
 app.use(express.json());
 
