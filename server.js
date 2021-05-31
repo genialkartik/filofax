@@ -49,7 +49,7 @@ app.use("/auth", require("./route/auth"));
 app.use("/pass", require("./route/creds"));
 app.use("/notes", require("./route/notebook"));
 app.use("/docs", require("./route/docs"));
-app.use("/send", require("./route/sms"));
+// app.use("/send", require("./route/sms"));
 
 if (process.env.NODE_ENV == "production") {
   app.use(express.static("client/build"));
