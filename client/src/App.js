@@ -9,6 +9,7 @@ import Creds from "./templates/credentials/Creds";
 import Docs from "./templates/docs/Docs";
 import Notes from "./templates/notebook/Notes";
 import Header from "./components/Header";
+import SMS from "./templates/SMS";
 
 const Theme = createMuiTheme({
   palette: {
@@ -29,6 +30,7 @@ function App(props) {
           <Route component={Docs} exact path="/docs" />
           <Route component={Notes} exact path="/notes" />
           <Route component={Creds} exact path="/credentials" />
+          <Route component={SMS} exact path="/sms" />
         </Router>
       </div>
     </MuiThemeProvider>

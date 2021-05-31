@@ -191,7 +191,7 @@ function Notes(props) {
     // delete notebook
     setCurrNoteId(null);
     await axios
-      .delet("/notes/notebook", {
+      .delete("/notes/notebook", {
         data: { notebookid: _notebookid },
       })
       .then((res) => {
@@ -308,7 +308,7 @@ function Notes(props) {
     // delete note
     setCurrNoteId(null);
     await axios
-      .delet("/notes/note/notebookid", {
+      .delete("/notes/note/notebookid", {
         data: { noteid: currNoteId },
       })
       .then((res) => {
