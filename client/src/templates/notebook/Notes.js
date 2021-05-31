@@ -226,10 +226,10 @@ function Notes(props) {
   const saveNewNote = async () => {
     console.log(currNoteId);
     console.log(currNotebookId);
-    if (!noteTitle) {
-      setMsg("Please Enter Note Title");
+    if (!noteTitle || !noteSubtitle || !noteDescription) {
+      setMsg("Fill all required Inputs");
       setSnackOpen(true);
-      setTimeout(() => setSnackOpen(false), 2000);
+      setTimeout(() => setSnackOpen(false), 3000);
     }
     // create new note
     else if (!currNoteId && currNotebookId) {
@@ -245,6 +245,10 @@ function Notes(props) {
         .then((res) => {
           if (res.data.note_added) {
             setNotesList((notes) => [...notes, res.data.note_added]);
+            setCurrNoteId(res.data.note_added.noteid);
+            setNoteTitle(res.data.note_added.title);
+            setNoteSubtitle(res.data.note_added.subtitle);
+            setNoteDescription(res.data.note_added.description);
             setMsg("New Note Created");
             setSnackOpen(true);
             setTimeout(() => setSnackOpen(false), 1000);
@@ -301,6 +305,7 @@ function Notes(props) {
           setTimeout(() => setSnackOpen(false), 1000);
         });
     }
+
     setNewNoteBool(false);
   };
 
@@ -468,7 +473,6 @@ function Notes(props) {
               name="title"
               value={noteTitle ? noteTitle : ""}
               inputProps={{ className: classes.inputNote }}
-              variant="filled"
               placeholder="Note Title..."
               fontFamily="Monospace"
             />
@@ -511,7 +515,6 @@ function Notes(props) {
               onChange={(e) => setNoteSubtitle(e.target.value)}
               value={noteSubtitle ? noteSubtitle : ""}
               inputProps={{ className: classes.inputSubtitle }}
-              variant="filled"
               placeholder="Note Subtitle..."
             />
           </div>
@@ -557,6 +560,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#121212",
   },
   notes_view_area: {
+    marginTop: "50px",
     display: "grid",
     gridTemplateRows: "3rem 5rem auto",
   },
@@ -625,7 +629,7 @@ const useStyles = makeStyles((theme) => ({
   },
   inputSubtitle: {
     width: "100%",
-    color: "#bbb",
+    color: "#ccc",
   },
   descInputContainer: {
     overflow: "hidden",

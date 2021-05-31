@@ -144,7 +144,7 @@ router
     try {
       if (!user) throw "nosession";
       // delete note
-      const delete_note = await Notebook.deleteOne({ noteid: req.body.noteid });
+      const delete_note = await Note.deleteOne({ noteid: req.body.noteid });
       res.json({ deleted: delete_note.n ? true : false });
     } catch (error) {
       console.log(error);
