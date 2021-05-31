@@ -1,17 +1,14 @@
 const express = require("express");
 const router = express();
-// const { Twilio } = require("twilio");
 const client = require("twilio")(
-  "AC928098c587fb3bf2e546f06b09002219",
-  "57bd83f0c0afdfe51f07351f45670447"
+  process.env.ACCOUNT_SID,
+  process.env.AUTH_TOKEN
 );
 
 router.post("/code", async (req, res) => {
   console.log(req.body);
 
-  // const client = context.getTwilioClient();
-  // const service = context.VERIFY_SERVICE_SID;
-  const service = "VA8f40281811c9267071b295ad1c591099";
+  const service = process.env.VERIFY_SERVICE_SID;
 
   client.verify
     .services(service)
@@ -39,9 +36,7 @@ router.post("/code", async (req, res) => {
 router.post("/verify", async (req, res) => {
   console.log(req.body);
 
-  // const client = context.getTwilioClient();
-  // const service = context.VERIFY_SERVICE_SID;
-  const service = "VA8f40281811c9267071b295ad1c591099";
+  const service = process.env.VERIFY_SERVICE_SID;
 
   client.verify
     .services(service)
