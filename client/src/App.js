@@ -3,13 +3,13 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import "./App.css";
 import Home from "./templates/Home";
 import Login from "./templates/auth/Login";
-import SignUp from "./templates/auth/SignUp";
 import Bucket from "./templates/bucket/Bucket";
 import Creds from "./templates/credentials/Creds";
 import Docs from "./templates/docs/Docs";
 import Notes from "./templates/notebook/Notes";
 import Header from "./components/Header";
 import SMS from "./templates/SMS";
+import SignUp from "./templates/auth/SignUp";
 
 const Theme = createMuiTheme({
   palette: {
@@ -25,7 +25,7 @@ function App(props) {
           <Header />
           <Route component={Home} exact path="/" />
           <Route component={Login} path="/login" />
-          <Route component={SignUp} exact path="/signup" />
+          <Route component={SignUp} exact path="/register" />
           <Route component={Bucket} exact path="/bucket" />
           <Route component={Docs} exact path="/docs" />
           <Route component={Notes} exact path="/notes" />
